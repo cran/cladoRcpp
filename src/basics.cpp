@@ -168,7 +168,7 @@ unsigned nChoosek( unsigned n, unsigned k )
 }
 
 
-// print a vector via cout
+// print an int vector via cout
 void printvec (vector<int> myvector1)
 	{
 	for (int i=0; i<myvector1.size(); i++)
@@ -178,6 +178,15 @@ void printvec (vector<int> myvector1)
 	//std::cout << "\n";
 	}
 
+// print an bool vector via cout
+void printBoolVec (vector<bool> myvector1)
+	{
+	for (int i=0; i<myvector1.size(); i++)
+		{
+		//std::cout << myvector1[i] << " ";
+		}
+	//std::cout << "\n";
+	}
 
 
 // Merge two vectors (e.g. to check vicariance)

@@ -11,9 +11,9 @@
 
   \item{maxareas}{maximum number of areas in this analyses}
 
-  \item{include_null_range}{TRUE or FALSE, should the Null
-  range be included in the possible states? (e.g., LAGRANGE
-  default is yes)}
+  \item{include_null_range}{\code{TRUE} or \code{FALSE},
+  should the \code{NULL} range be included in the possible
+  states? (e.g., \code{LAGRANGE} default is yes)}
 }
 \value{
   \code{R_states_list} A list of the states, where each
@@ -78,6 +78,7 @@ states_list
   http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&dopt=Citation&list_uids=18253896>.
 }
 \seealso{
-  \code{\link[stats]{convolve}}
+  \code{\link{numstates_from_numareas}},
+  \code{\link{areas_list_to_states_list_old}}
 }
 

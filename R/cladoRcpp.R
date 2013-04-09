@@ -3,6 +3,41 @@
 #roxygenize()
 
 
+
+
+
+#######################################################
+# Utilities
+#######################################################
+
+#' String splitting shortcut
+#' 
+#' \code{\link[base]{strsplit}} returns the results inside a list, which is annoying. \code{strsplit3} shortens the process.
+#'
+#' @param x A string to split
+#' @param ... Other arguments to \code{\link[base]{strsplit}}.  The argument \code{split} is \emph{required}.
+#' @return \code{out} The output from inside the list.
+#' @export
+#' @seealso \code{\link[base]{strsplit}}
+#' @author Nicholas J. Matzke \email{matzke@@berkeley.edu}
+#' @examples
+#' 
+#' # strsplit returns the results inside a list element
+#' out = strsplit("ABC", split="")
+#' out
+#' # I.e....
+#' out[[1]]
+#' 
+#' # If this is annoying/ugly in the code, use strsplit3:
+#' out = strsplit3("ABC", split="")
+#' out
+#' 
+strsplit3 <- function(x, ...)
+	{
+	out = strsplit(x, ...)[[1]]
+	return(out)
+	}
+
 # Note: Rd files barely understand LaTeX, so just do basics. The PDF files will do
 # nice LaTeX, however. 
 #######################################################
@@ -83,6 +118,135 @@ numstates_from_numareas <- function(numareas=3, maxareas=numareas, include_null_
 
 
 #######################################################
+# areas_list_to_states_list_old
+#######################################################
+#' Convert a list of areas to a list of geographic ranges (states); original R version
+#' 
+#' This is the original R version of the function which converts a list of possible areas to
+#' a list of all possible states (geographic ranges).  This gets slow for large numbers of areas.
+#' 
+#' The function is mostly replaced by \code{\link[cladoRcpp]{rcpp_areas_list_to_states_list}} in optimized code, but is still used in some places
+#' for display purposes.
+#' 
+#' @param areas a list of areas (character or number; the function converts these to numbers, starting with 0)
+#' @param maxareas maximum number of areas in this analyses
+#' @param include_null_range \code{TRUE} or \code{FALSE}, should the \code{NULL} range be included in the possible states? (e.g., LAGRANGE default is yes)
+#' @param split_ABC \code{TRUE} or \code{FALSE} If \code{TRUE} the output will consist of a list of lists (c("A","B","C"), c("A","B"), c("A","D"), etc.); 
+#' if \code{FALSE}, the list of areas will be collapsed ("ABC", "AB", "AD", etc.).
+#' @return \code{states_list} A list of the states.
+#' @export
+#' @seealso \code{\link{numstates_from_numareas}}, \code{\link{rcpp_areas_list_to_states_list}}
+#' @note Go BEARS!
+#' @author Nicholas J. Matzke \email{matzke@@berkeley.edu} 
+#' @references
+#' \url{http://phylo.wikidot.com/matzke-2013-international-biogeography-society-poster}
+#' \url{https://code.google.com/p/lagrange/}
+#' @bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
+#'   @cite Matzke_2012_IBS
+#'	 @cite ReeSmith2008
+#' @examples
+#' areas = c("A","B","C")
+#' areas_list_to_states_list_old(areas=areas, maxareas=length(areas), include_null_range=TRUE, split_ABC=TRUE)
+#' areas_list_to_states_list_old(areas=areas, maxareas=length(areas), include_null_range=TRUE, split_ABC=FALSE)
+#' areas_list_to_states_list_old(areas=areas, maxareas=length(areas), include_null_range=FALSE, split_ABC=TRUE)
+#' areas_list_to_states_list_old(areas=areas, maxareas=length(areas), include_null_range=FALSE, split_ABC=FALSE)
+#' areas_list_to_states_list_old(areas=areas, maxareas=2, include_null_range=TRUE, split_ABC=TRUE)
+#' areas_list_to_states_list_old(areas=areas, maxareas=2, include_null_range=TRUE, split_ABC=FALSE)
+#' areas_list_to_states_list_old(areas=areas, maxareas=2, include_null_range=FALSE, split_ABC=TRUE)
+#' areas_list_to_states_list_old(areas=areas, maxareas=2, include_null_range=FALSE, split_ABC=FALSE)
+#' areas_list_to_states_list_old(areas=areas, maxareas=1, include_null_range=TRUE, split_ABC=TRUE)
+#' areas_list_to_states_list_old(areas=areas, maxareas=1, include_null_range=TRUE, split_ABC=FALSE)
+#' areas_list_to_states_list_old(areas=areas, maxareas=1, include_null_range=FALSE, split_ABC=TRUE)
+#' areas_list_to_states_list_old(areas=areas, maxareas=1, include_null_range=FALSE, split_ABC=FALSE)
+#' 
+areas_list_to_states_list_old <- function(areas=c("A","B","C"), maxareas=length(areas), include_null_range=TRUE, split_ABC=TRUE)
+	{
+	
+	# Error trap
+	if (maxareas > length(areas))
+		{
+		maxareas = length(areas)
+		}
+	
+	
+	# Initialize the states_list to the correct size
+	nstates = numstates_from_numareas(numareas=length(areas), maxareas=maxareas, include_null_range=include_null_range)
+	
+	states_list = rep(NA, times=nstates)
+
+	# Add null range (globally extinct) to the states list
+	if (include_null_range == TRUE)
+		{
+		# Start the index at 1 (first entry will be s=2)
+		s = 1
+		} else {
+		s = 0
+		}
+	
+	if (split_ABC == FALSE)
+		{
+		# Option #1: Don't split states
+		# Add range combinations to the list
+		for (m in 1:maxareas)
+			{
+			states_matrix = combn(x=areas, m=m)
+			
+			# Collapse the columns into txt
+			tmp_states = apply(X=states_matrix, 2, paste, collapse="")
+			
+			# Add the states to the list
+			for (i in 1:length(tmp_states))
+				{
+				states_list[[(s=s+1)]] = tmp_states[[i]]
+				}
+			}
+		}
+	
+	# Unlist states_list
+	#states_list = unlist(states_list)
+
+
+
+	if (split_ABC == TRUE)
+		{
+
+		# Option #2: Do split states
+		# Add range combinations to the list
+		for (m in 1:maxareas)
+			{
+			states_matrix = combn(x=areas, m=m)
+			
+			# Collapse the columns into txt
+			tmp_states = apply(X=states_matrix, 2, paste, collapse=",")
+			
+			# Add the states to the list
+			for (i in 1:length(tmp_states))
+				{
+				states_list[[(s=s+1)]] = tmp_states[[i]]
+				}
+			}
+
+		# Split the txt
+		states_list = mapply(FUN=strsplit3, split=",", states_list)
+		names(states_list) = NULL		
+		}
+
+			
+	# Add null range (globally extinct) to the states list
+	if (include_null_range == TRUE)
+		{
+		s = 1
+		states_list[[s]] = c("_")
+		} else {
+		s = 1
+		#states_list[[s]] = c(NULL)		
+		}
+	return(states_list)
+	}
+
+
+
+#######################################################
 # rcpp_areas_list_to_states_list
 #######################################################
 #' Make a list of 0-based indices of possible combinations of input areas
@@ -100,10 +264,10 @@ numstates_from_numareas <- function(numareas=3, maxareas=numareas, include_null_
 #'
 #' @param areas a list of areas (character or number; the function converts these to numbers, starting with 0)
 #' @param maxareas maximum number of areas in this analyses
-#' @param include_null_range TRUE or FALSE, should the Null range be included in the possible states? (e.g., LAGRANGE default is yes)
+#' @param include_null_range \code{TRUE} or \code{FALSE}, should the \code{NULL} range be included in the possible states? (e.g., \code{LAGRANGE} default is yes)
 #' @return \code{R_states_list} A list of the states, where each state is a list of areas in the form of 0-based indices
 #' @export
-#' @seealso \code{\link[stats]{convolve}}
+#' @seealso \code{\link{numstates_from_numareas}}, \code{\link{areas_list_to_states_list_old}}
 #' @bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
 #'   @cite Matzke_2012_IBS
 #'	 @cite ReeSmith2008

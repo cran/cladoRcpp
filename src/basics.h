@@ -21,6 +21,7 @@ extern "C" unsigned nChoosek( unsigned n, unsigned k );
 
 extern "C" int get_missing_int(std::vector<int> myvector1, std::vector<int> myvector2);
 extern "C" void printvec (std::vector<int> myvector1);
+extern "C" void printBoolVec (std::vector<bool> myvector1);
 
 //RcppExport int maxval(SEXP maxent01sub) ;
 //RcppExport int minval(SEXP maxent01sub) ;

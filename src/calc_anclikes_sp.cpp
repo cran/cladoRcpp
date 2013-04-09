@@ -323,13 +323,13 @@ R_normalize_TF) {
 					// print some stuff
 					/* 
 					int tmp = get_missing_int (ending_state, starting_state);
-					std::cout << starting_state.size() << "\n";
-					std::cout << ending_state.size() << "\n";
+					//std::cout << starting_state.size() << "\n";
+					//std::cout << ending_state.size() << "\n";
 					printvec(starting_state);
 					printvec(ending_state);
-					std::cout << "missing state=" << tmp << "\n";
-					std::cout << "\n";
-					std::cout << "\n";
+					//std::cout << "missing state=" << tmp << "\n";
+					//std::cout << "\n";
+					//std::cout << "\n";
 					*/
 
 					
@@ -390,13 +390,13 @@ R_normalize_TF) {
 					// print some stuff
 					/* 
 					int tmp = get_missing_int (ending_state, starting_state);
-					std::cout << starting_state.size() << "\n";
-					std::cout << ending_state.size() << "\n";
+					//std::cout << starting_state.size() << "\n";
+					//std::cout << ending_state.size() << "\n";
 					printvec(starting_state);
 					printvec(ending_state);
-					std::cout << "missing state=" << tmp << "\n";
-					std::cout << "\n";
-					std::cout << "\n";
+					//std::cout << "missing state=" << tmp << "\n";
+					//std::cout << "\n";
+					//std::cout << "\n";
 					*/
 
 					
@@ -653,13 +653,13 @@ SEXP R_normalize_TF, SEXP R_min_precision) {
 					// print some stuff
 					/* 
 					int tmp = get_missing_int (ending_state, starting_state);
-					std::cout << starting_state.size() << "\n";
-					std::cout << ending_state.size() << "\n";
+					//std::cout << starting_state.size() << "\n";
+					//std::cout << ending_state.size() << "\n";
 					printvec(starting_state);
 					printvec(ending_state);
-					std::cout << "missing state=" << tmp << "\n";
-					std::cout << "\n";
-					std::cout << "\n";
+					//std::cout << "missing state=" << tmp << "\n";
+					//std::cout << "\n";
+					//std::cout << "\n";
 					*/
 
 					
@@ -736,13 +736,13 @@ SEXP R_normalize_TF, SEXP R_min_precision) {
 					// print some stuff
 					/* 
 					int tmp = get_missing_int (ending_state, starting_state);
-					std::cout << starting_state.size() << "\n";
-					std::cout << ending_state.size() << "\n";
+					//std::cout << starting_state.size() << "\n";
+					//std::cout << ending_state.size() << "\n";
 					printvec(starting_state);
 					printvec(ending_state);
-					std::cout << "missing state=" << tmp << "\n";
-					std::cout << "\n";
-					std::cout << "\n";
+					//std::cout << "missing state=" << tmp << "\n";
+					//std::cout << "\n";
+					//std::cout << "\n";
 					*/
 
 					
@@ -2200,6 +2200,7 @@ states_indices, SEXP s, SEXP v, SEXP j, SEXP y, SEXP dmat, SEXP maxent01s, SEXP 
 maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 
 	using namespace std;
+	//std::cout << "A0" << endl;
 
 	float min_precision = 1e-30;
 
@@ -2230,6 +2231,8 @@ maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 	Rcpp::NumericMatrix maxent01jump(maxent01j);
 	Rcpp::NumericMatrix maxent01symp(maxent01y);
 	
+	//std::cout << "A1" << endl;
+	
 	/* Get the sizes of the vectors */
 	int n_xa = xa.size();
 	int n_xb = xb.size();
@@ -2247,8 +2250,12 @@ maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 	/* Store the states_indices as a vector of vectors */
 	/* http://stackoverflow.com/questions/8159872/r-list-of-numeric-vectors-c-2d-array-with-rcpp */
 	
-	/* Empty vector for the states */
+	/* Empty vector of vectors for the states */
+	/* May be the memory problem; fix by creating an internal int vector and inserting it */
 	vector< vector<int> > states_vecs;
+	//vector<int> tempvec;
+	//tempvec.push_back(tmp);
+	
 	for(int i=0; i<numstates; i++)
 		{
 		/* Get the subvector */
@@ -2295,11 +2302,13 @@ maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 	// The final result
 	//int max_min_rangesize = *it5;
 	
+	// No longer works -- 2013-04-10
 	// This prints the memory address
-	//std::cout << max_min_rangesize << endl;
+	// std::cout << max_min_rangesize << endl;
 	// This prints the value(s) transferred
-	//std::cout << max_min_rangesize_c << endl;
+	// std::cout << max_min_rangesize_c << endl;
 	
+	//std::cout << "A2" << endl;
 	
 	//float testval = maxval(maxent01sub);
 
@@ -2373,7 +2382,8 @@ maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 		// In this case, we don't have to do the reverse
 		}
 	
-	
+	//std::cout << "A3" << endl;
+
 	/* Identify sympatry (range-subset) */
 	/* Identify sympatry (range-subset) */
 	/* Identify sympatry (range-subset) */
@@ -2506,6 +2516,10 @@ maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 		
 		}
 
+
+	//std::cout << "A4" << endl;
+
+
 	/* Identify vicariance (range-splitting) */
 	/* Identify vicariance (range-splitting) */
 	/* Identify vicariance (range-splitting) */
@@ -2533,6 +2547,7 @@ maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 		
 		/* count the number of states we put in; this is the actual size of the output vector */
 		int filled_counter = 0;
+		//std::cout << "A4.1" << endl;
 		
 		// Go through each ancestral state of range size 2 or greater
 		for (int l = 0; l < numstates; l++)
@@ -2554,6 +2569,8 @@ maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 			// For every range size between 2 and the maximum minrange, list every combination
 			// WITHIN the anc areas--the tough thing here is that you don't have the indexes
 
+			//std::cout << "A4.2" << endl;
+
 			// Go through the states of the possible smaller descendants
 			for (int desc_size=1; desc_size<=max_min_rangesize_c[(ancsize-1)]; desc_size++)
 				{
@@ -2567,20 +2584,28 @@ maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 				int start_state_index = range_size_category_indexes[(desc_size-1)];
 				int end_state_index = range_size_category_indexes[desc_size] - 1;
 				
+				
+				//std::cout << "A4.3" << endl;
+
+				
 				// Go through the appropriate state indexes
 				for (int state_index=start_state_index; state_index <= end_state_index; state_index++)
 					{
 					/* areas on the right branch; and size */
 					vector<int> rstate_areas( states_vecs[state_index] );
 					int rsize = rstate_areas.size();
+					//std::cout << "A4.4" << endl;
 
 					// Include only if ALL the descendant right states are in the ancestor
 					if (all_ints_found(rstate_areas, ancestral_areas) == true)
 						{
+						//std::cout << "A4.5" << endl;
+
 						// The LEFT states are what's left from ancestral areas after rstate_areas are removed
 						vector<int> lstate_areas( ancestral_areas );
 
 
+						//std::cout << "A4.6" << endl;
 						
 						// OLD: remove rstates do in reverse order to avoid fuckups
 						// find the states to remove
@@ -2623,19 +2648,43 @@ maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 						lstate_areas.resize(last);
 						// Hopefully worketh...
 						*/
+						//std::cout << "A4.7" << endl;
+						//std::cout << "needs_to_be_removed" << endl;
+						//printBoolVec(needs_to_be_removed);
+						//std::cout << "needs_to_be_removed.size()" << endl;
+						//std::cout << needs_to_be_removed.size() << endl;
 						
+
 						// Actually, just make a new fucking list
 						vector <int> new_lstate_areas;
+						
+						// We get a memory error here, probably because the 
+						// list rare doesn't get initialized
+						bool has_new_lstate_areas_been_initialized = false;
+						
 						for (int i=0; i<needs_to_be_removed.size(); i++)
 							{
 							if (needs_to_be_removed[i] == false)
 								{
 								new_lstate_areas.push_back(lstate_areas[i]);
+								has_new_lstate_areas_been_initialized = true;
 								}
 							}
-							
+						
+						// If it never gets initialized, then there are NO new_lstate_areas, and we should just continue without adding anything
+						// This does fix the bug
+						if (has_new_lstate_areas_been_initialized == false)
+							{
+							continue;
+							}
+						
 						// Now you have just the remaining, true, corresponding lstate_areas
 						int lsize = new_lstate_areas.size();
+						//std::cout << "lsize: " << lsize << endl;
+						//std::cout << "A4.8" << endl;
+						//std::cout << "printvec new_lstate_areas" << endl;
+						//printvec(new_lstate_areas);
+						//std::cout << "end new_lstate_areas" << endl;
 						
 						// Search for the appropriate index inside this size class
 						int start_of_possible_lindexes_to_search = range_size_category_indexes[(lsize-1)];
@@ -2656,12 +2705,26 @@ maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 							for (int x=0; x<states_vecs[possible_lindex].size(); x++) {cout << states_vecs[possible_lindex][x] ;}
 							//cout << " index:" << possible_lindex;
 							*/
+							//std::cout << "A4.9" << endl;
+							
+							//printvec(new_lstate_areas);
+							//std::cout << possible_lindex << endl;
+							//printvec(states_vecs[possible_lindex]);
+							//std::cout << xv << endl;
+							//std::cout << ancsize << endl;
+							//std::cout << rsize << endl;
+							//std::cout << maxent01vic((ancsize-1), (rsize-1)) << endl;
+							//std::cout << all_ints_equal(new_lstate_areas, states_vecs[possible_lindex]) << endl;
+							
 							if (all_ints_equal(new_lstate_areas, states_vecs[possible_lindex]))
 								{
 								//cout << " MATCH\n" << possible_lindex;
 								
 								// vicariance speciation on right branch
 								tmp_probval = xv * maxent01vic((ancsize-1), (rsize-1)) * 1 * 1;
+
+								//std::cout << "A4.10" << endl;
+
 
 								// Add the i index (left side state) and j index (right side state) to the list for
 								// this ancestral row
@@ -2699,6 +2762,9 @@ maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 				}	// End iteration through right desc sizes
 			} // End iteration through ancestral states
 		
+		//std::cout << "A5" << endl;
+
+		
 		// 2. However, only do it ONCE when the range sizes are the SAME, since the 
 		// algorithm above gets those independently
 		nonzero_i.insert(nonzero_i.end(), tmp_inums_LRsame_size.begin(), tmp_inums_LRsame_size.end());
@@ -2725,6 +2791,7 @@ maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 		nonzero_probs.insert(nonzero_probs.end(), tmp_colprobs.begin(), tmp_colprobs.end());
 		
 		}
+	//std::cout << "A6" << endl;
 
 	/* Identify jump (new ranges) */
 	/* Identify jump (new ranges) */
@@ -2845,7 +2912,10 @@ jprob_for_cell_based_on_distances;
 					}	// End iteration through states of a certain size
 				}	// End iteration through desc sizes
 			} // End iteration through ancestral states
-		
+	
+		//std::cout << "A7" << endl;
+
+	
 		// Now, add the sympatric speciation events to the main COO speciation lists
 		// in efficient fashion
 		// using vector1.insert():
@@ -2861,6 +2931,7 @@ jprob_for_cell_based_on_distances;
 		nonzero_l.insert(nonzero_l.end(), tmp_lnums.begin(), tmp_lnums.end());
 		nonzero_probs.insert(nonzero_probs.end(), tmp_colprobs.begin(), tmp_colprobs.end());
 			
+		//std::cout << "A8" << endl;
 		
 		
 		}
@@ -2871,7 +2942,8 @@ jprob_for_cell_based_on_distances;
 	/* return the probability vector */
 	//if (printmat == 1) {cout << "END cpp_calc_anclikes_sp_COOweights_faster()\n";};
 	//if (printmat == 1) {cout << "\n";};
-	
+	//std::cout << "A9" << endl;
+
 	
 	//return sp_rowsums;
 	return(Rcpp::List::create(nonzero_l, nonzero_i, nonzero_j, nonzero_probs));

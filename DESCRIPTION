@@ -1,9 +1,10 @@
 Package: cladoRcpp
 Type: Package
 Title: C++ implementations of phylogenetic calculations
-Version: 0.1
-Date: 2013-02-19
-Author: Nicholas J. Matzke, Dept. of Integrative Biology, U.C. Berkeley
+Version: 0.11
+Date: 2013-04-09
+Authors@R: c(person("Nicholas J.", "Matzke", email =
+        "matzke@berkeley.edu", role = c("aut", "cre", "cph")))
 Maintainer: Nicholas J. Matzke <matzke@berkeley.edu>
 Depends: methods, Rcpp (>= 0.9.10), RcppArmadillo
 LinkingTo: Rcpp, RcppArmadillo
@@ -23,9 +24,11 @@ Description: This package implements in C++/Rcpp various
         becomes an issue.  C++ implementation plus clever tricks (many
         combinations can be eliminated a priori) can greatly speed the
         computation time over naive R implementations.
-License: GPL
+License: GPL (>= 2)
+LazyLoad: yes
 ByteCompile: true
-Packaged: 2013-04-04 00:11:49 UTC; nickm
+Packaged: 2013-04-11 09:55:40 UTC; nickm
+Author: Nicholas J. Matzke [aut, cre, cph]
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2013-04-04 07:31:55
+Date/Publication: 2013-04-11 12:19:46

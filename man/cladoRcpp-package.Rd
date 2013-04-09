@@ -8,7 +8,7 @@
 }
 \details{
   \tabular{ll}{ Package: \tab cladoRcpp\cr Type: \tab
-  Package\cr Version: \tab 0.1\cr Date: \tab 2013-02-19\cr
+  Package\cr Version: \tab 0.11\cr Date: \tab 2013-04-09\cr
   License: \tab GPL (>= 3)\cr LazyLoad: \tab yes\cr }
 
   \bold{Summary:} This package implements in C++/Rcpp
