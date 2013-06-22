@@ -79,18 +79,28 @@ strsplit3 <- function(x, ...)
 #'	 @cite ReeSmith2008
 #' @author Nicholas Matzke \email{matzke@@berkeley.edu}
 #' @examples
-#' numstates_from_numareas(numareas=3, maxareas=3, include_null_range=FALSE)
-#' numstates_from_numareas(numareas=3, maxareas=3, include_null_range=TRUE)
-#' numstates_from_numareas(numareas=3, maxareas=2, include_null_range=TRUE)
-#' numstates_from_numareas(numareas=3, maxareas=1, include_null_range=TRUE)
-#' numstates_from_numareas(numareas=7, maxareas=7, include_null_range=TRUE)
-#' numstates_from_numareas(numareas=7, maxareas=2, include_null_range=TRUE)
-#' numstates_from_numareas(numareas=8, maxareas=8, include_null_range=TRUE)
-#' numstates_from_numareas(numareas=8, maxareas=2, include_null_range=TRUE)
-#' numstates_from_numareas(numareas=20, maxareas=20, include_null_range=TRUE)
-#' numstates_from_numareas(numareas=20, maxareas=2, include_null_range=TRUE)
-#' numstates_from_numareas(numareas=20, maxareas=3, include_null_range=TRUE)
-#'
+#' numstates_from_numareas(numareas=3, maxareas=3, 
+#' include_null_range=FALSE)
+#' numstates_from_numareas(numareas=3, maxareas=3, 
+#' include_null_range=TRUE)
+#' numstates_from_numareas(numareas=3, maxareas=2, 
+#' include_null_range=TRUE)
+#' numstates_from_numareas(numareas=3, maxareas=1, 
+#' include_null_range=TRUE)
+#' numstates_from_numareas(numareas=7, maxareas=7, 
+#' include_null_range=TRUE)
+#' numstates_from_numareas(numareas=7, maxareas=2, 
+#' include_null_range=TRUE)
+#' numstates_from_numareas(numareas=8, maxareas=8, 
+#' include_null_range=TRUE)
+#' numstates_from_numareas(numareas=8, maxareas=2, 
+#' include_null_range=TRUE)
+#' numstates_from_numareas(numareas=20, maxareas=20, 
+#' include_null_range=TRUE)
+#' numstates_from_numareas(numareas=20, maxareas=2, 
+#' include_null_range=TRUE)
+#' numstates_from_numareas(numareas=20, maxareas=3, 
+#' include_null_range=TRUE)
 numstates_from_numareas <- function(numareas=3, maxareas=numareas, include_null_range=FALSE)
 	{
 	# The formula for the number of geographic states, based on the number of areas,
@@ -146,18 +156,30 @@ numstates_from_numareas <- function(numareas=3, maxareas=numareas, include_null_
 #'	 @cite ReeSmith2008
 #' @examples
 #' areas = c("A","B","C")
-#' areas_list_to_states_list_old(areas=areas, maxareas=length(areas), include_null_range=TRUE, split_ABC=TRUE)
-#' areas_list_to_states_list_old(areas=areas, maxareas=length(areas), include_null_range=TRUE, split_ABC=FALSE)
-#' areas_list_to_states_list_old(areas=areas, maxareas=length(areas), include_null_range=FALSE, split_ABC=TRUE)
-#' areas_list_to_states_list_old(areas=areas, maxareas=length(areas), include_null_range=FALSE, split_ABC=FALSE)
-#' areas_list_to_states_list_old(areas=areas, maxareas=2, include_null_range=TRUE, split_ABC=TRUE)
-#' areas_list_to_states_list_old(areas=areas, maxareas=2, include_null_range=TRUE, split_ABC=FALSE)
-#' areas_list_to_states_list_old(areas=areas, maxareas=2, include_null_range=FALSE, split_ABC=TRUE)
-#' areas_list_to_states_list_old(areas=areas, maxareas=2, include_null_range=FALSE, split_ABC=FALSE)
-#' areas_list_to_states_list_old(areas=areas, maxareas=1, include_null_range=TRUE, split_ABC=TRUE)
-#' areas_list_to_states_list_old(areas=areas, maxareas=1, include_null_range=TRUE, split_ABC=FALSE)
-#' areas_list_to_states_list_old(areas=areas, maxareas=1, include_null_range=FALSE, split_ABC=TRUE)
-#' areas_list_to_states_list_old(areas=areas, maxareas=1, include_null_range=FALSE, split_ABC=FALSE)
+#' areas_list_to_states_list_old(areas=areas, maxareas=length(areas), 
+#' include_null_range=TRUE, split_ABC=TRUE)
+#' areas_list_to_states_list_old(areas=areas, maxareas=length(areas), 
+#' include_null_range=TRUE, split_ABC=FALSE)
+#' areas_list_to_states_list_old(areas=areas, maxareas=length(areas), 
+#' include_null_range=FALSE, split_ABC=TRUE)
+#' areas_list_to_states_list_old(areas=areas, maxareas=length(areas), 
+#' include_null_range=FALSE, split_ABC=FALSE)
+#' areas_list_to_states_list_old(areas=areas, maxareas=2, 
+#' include_null_range=TRUE, split_ABC=TRUE)
+#' areas_list_to_states_list_old(areas=areas, maxareas=2, 
+#' include_null_range=TRUE, split_ABC=FALSE)
+#' areas_list_to_states_list_old(areas=areas, maxareas=2, 
+#' include_null_range=FALSE, split_ABC=TRUE)
+#' areas_list_to_states_list_old(areas=areas, maxareas=2, 
+#' include_null_range=FALSE, split_ABC=FALSE)
+#' areas_list_to_states_list_old(areas=areas, maxareas=1, 
+#' include_null_range=TRUE, split_ABC=TRUE)
+#' areas_list_to_states_list_old(areas=areas, maxareas=1, 
+#' include_null_range=TRUE, split_ABC=FALSE)
+#' areas_list_to_states_list_old(areas=areas, maxareas=1, 
+#' include_null_range=FALSE, split_ABC=TRUE)
+#' areas_list_to_states_list_old(areas=areas, maxareas=1, 
+#' include_null_range=FALSE, split_ABC=FALSE)
 #' 
 areas_list_to_states_list_old <- function(areas=c("A","B","C"), maxareas=length(areas), include_null_range=TRUE, split_ABC=TRUE)
 	{
@@ -277,14 +299,19 @@ areas_list_to_states_list_old <- function(areas=c("A","B","C"), maxareas=length(
 #' areas_list = c("A", "B", "C")
 #' areas_list
 #'
-#' # Calculate the list of 0-based indices for each possible geographic range, i.e. each combination of areas
-#' states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=3, include_null_range=FALSE)
+#' # Calculate the list of 0-based indices for each possible geographic range, i.e.
+#' # each combination of areas
+#' states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=3, 
+#' include_null_range=FALSE)
 #' states_list
-#' states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=3, include_null_range=TRUE)
+#' states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=3, 
+#' include_null_range=TRUE)
 #' states_list
-#' states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=2, include_null_range=TRUE)
+#' states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=2, 
+#' include_null_range=TRUE)
 #' states_list
-#' states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=1, include_null_range=TRUE)
+#' states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=1, 
+#' include_null_range=TRUE)
 #' states_list
 #' 
 rcpp_areas_list_to_states_list <- function(areas=c("A","B","C"), maxareas=length(areas), include_null_range=TRUE)
@@ -306,14 +333,14 @@ rcpp_areas_list_to_states_list <- function(areas=c("A","B","C"), maxareas=length
 
 	# Call the fast C++ function
 	#R_states_list = .Call( "cpp_areas_list_to_states_list", R_areas_indices=R_areas_indices, R_maxareas=R_maxareas, R_include_null_range=R_include_null_range, PACKAGE = "cladoRcpp" )
-	n = R_areas_indices
-	m = 2
-	nrows = m
-	ncols = choose(n,m)
-	combmat = matrix(data=0, nrow=nrows, ncol=ncols)
-	
-	length_output = nrows * ncols
-	
+	# n = R_areas_indices
+# 	m = 2
+# 	nrows = m
+# 	ncols = choose(n,m)
+# 	combmat = matrix(data=0, nrow=nrows, ncol=ncols)
+# 	
+# 	length_output = nrows * ncols
+# 	
 	
 	R_states_list = .Call("cpp_areas_list_to_states_list", as.integer(R_areas_indices), as.integer(R_maxareas), R_include_null_range)
 
@@ -358,14 +385,19 @@ rcpp_areas_list_to_states_list <- function(areas=c("A","B","C"), maxareas=length
 #' areas_list = c("A", "B", "C")
 #' areas_list
 #' 
-#' # Calculate the list of 0-based indices for each possible geographic range, i.e. each combination of areas
-#' states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=3, include_null_range=FALSE)
+#' # Calculate the list of 0-based indices for each possible 
+#' #geographic range, i.e. each combination of areas
+#' states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=3, 
+#' include_null_range=FALSE)
 #' states_list
-#' states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=3, include_null_range=TRUE)
+#' states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=3, 
+#' include_null_range=TRUE)
 #' states_list
-#' states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=2, include_null_range=TRUE)
+#' states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=2, 
+#' include_null_range=TRUE)
 #' states_list
-#' states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=1, include_null_range=TRUE)
+#' states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=1, 
+#' include_null_range=TRUE)
 #' states_list
 #' 
 #' # Hard-code the along-branch dispersal and extinction rates
@@ -386,12 +418,14 @@ rcpp_areas_list_to_states_list <- function(areas=c("A","B","C"), maxareas=length
 #' # Set up the instantaneous rate matrix (Q matrix, Qmat)
 #' # DON'T force a sparse-style (COO-formatted) matrix here
 #' force_sparse = FALSE
-#' Qmat = rcpp_states_list_to_DEmat(areas_list, states_list, dmat, elist, include_null_range=TRUE, normalize_TF=TRUE, makeCOO_TF=force_sparse)
+#' Qmat = rcpp_states_list_to_DEmat(areas_list, states_list, dmat, elist, 
+#' include_null_range=TRUE, normalize_TF=TRUE, makeCOO_TF=force_sparse)
 #' Qmat
 #' 
 #' # DO force a sparse-style (COO-formatted) matrix here
 #' force_sparse = TRUE
-#' Qmat = rcpp_states_list_to_DEmat(areas_list, states_list, dmat, elist, include_null_range=TRUE, normalize_TF=TRUE, makeCOO_TF=force_sparse)
+#' Qmat = rcpp_states_list_to_DEmat(areas_list, states_list, dmat, elist, 
+#' include_null_range=TRUE, normalize_TF=TRUE, makeCOO_TF=force_sparse)
 #' Qmat
 #' 
 rcpp_states_list_to_DEmat <- function(areas_list, states_list, dmat, elist, include_null_range=TRUE, normalize_TF=TRUE, makeCOO_TF=FALSE, min_precision=1e-26)
@@ -1240,7 +1274,7 @@ rcpp_calc_anclikes_sp_COOprobs <- function(Rcpp_leftprobs, Rcpp_rightprobs, l, s
 #'
 #' This should be faster, i.e. by look for each type of event individually.
 #' 
-#' Returns results as 4 columns: ancestral index, right index, left index, conditional
+#' Returns results as 4 columns: ancestral index, left index, right index, conditional
 #' probability given ancestral states (assuming likelihood of descendants is 1). Indexes
 #' are 0-based.
 #'
@@ -1284,8 +1318,8 @@ rcpp_calc_anclikes_sp_COOprobs <- function(Rcpp_leftprobs, Rcpp_rightprobs, l, s
 #' can be dramatically slow in R.app for some reason for even moderate numbers of states; perhaps 
 #' overrunning the line length...)
 #' @return \code{COO_weights_columnar} Transition weights matrix in COO-like format as 4 columns: 
-#' ancestral index, right index, left index, and weight of the specified transition. Indexes are
-#' 0-based.Dividing the
+#' ancestral index, left index, right index, and weight of the specified transition. Indexes are
+#' 0-based. Dividing the
 #' weights by the sum of the weights for a particular ancestral state yields the conditional
 #' probabilities of each transition at the speciation event.
 #' (assuming likelihood of descendants is 1).
@@ -1493,7 +1527,7 @@ rcpp_calc_anclikes_sp_using_COOprobs <- function(Rcpp_leftprobs, Rcpp_rightprobs
 #'
 #'
 #' @param COO_weights_columnar Transition probability matrix in COO-like format as 4 columns: 
-#' ancestral index, right index, left index, conditional probability given ancestral states.
+#' ancestral index, left index, right index, conditional probability given ancestral states.
 #' (assuming likelihood of descendants is 1). Indexes are 0-based.
 #' @param numstates The user should provide the number of states (WITHOUT counting the null range),
 #' in case they are not all
@@ -1557,7 +1591,7 @@ rcpp_calc_rowsums_for_COOweights_columnar <- function(COO_weights_columnar, nums
 #' @param Rcpp_leftprobs Probabilities of the states at the base of the left descendant branch
 #' @param Rcpp_rightprobs Probabilities of the states at the base of the right descendant branch
 #' @param COO_weights_columnar Transition probability matrix in COO-like format as 4 columns: 
-#' ancestral index, right index, left index, conditional probability given ancestral states.
+#' ancestral index, left index, right index, conditional probability given ancestral states.
 #' (assuming likelihood of descendants is 1). Indexes are 0-based.
 #' @param Rsp_rowsums A vector of size (numstates)  giving the sum of the relative probabilites of 
 #' each combination of descendant states, assuming the probabilities of the left- and right-states are 

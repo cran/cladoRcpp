@@ -45,37 +45,23 @@
 areas_list = c("A", "B", "C")
 areas_list
 
-# Calculate the list of 0-based indices for each possible geographic range, i.e. each combination of areas
-states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=3, include_null_range=FALSE)
+# Calculate the list of 0-based indices for each possible geographic range, i.e.
+# each combination of areas
+states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=3,
+include_null_range=FALSE)
 states_list
-states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=3, include_null_range=TRUE)
+states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=3,
+include_null_range=TRUE)
 states_list
-states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=2, include_null_range=TRUE)
+states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=2,
+include_null_range=TRUE)
 states_list
-states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=1, include_null_range=TRUE)
+states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=1,
+include_null_range=TRUE)
 states_list
 }
 \author{
   Nicholas Matzke \email{matzke@berkeley.edu}
-}
-\references{
-  Matzke N (2012). "Founder-event speciation in BioGeoBEARS
-  package dramatically improves likelihoods and alters
-  parameter inference in Dispersal-Extinction-Cladogenesis
-  (DEC) analyses." _Frontiers of Biogeography_, *4*(suppl.
-  1), pp. 210. ISSN 1948-6596, Poster abstract published in
-  the Conference Program and Abstracts of the International
-  Biogeography Society 6th Biannual Meeting, Miami,
-  Florida. Poster Session P10: Historical and
-  Paleo-Biogeography. Poster 129B. January 11, 2013, <URL:
-  \url{http://phylo.wikidot.com/matzke-2013-international-biogeography-society-poster}>.
-
-  Ree RH and Smith SA (2008). "Maximum likelihood inference
-  of geographic range evolution by dispersal, local
-  extinction, and cladogenesis." _Systematic Biology_,
-  *57*(1), pp. 4-14. <URL:
-  http://dx.doi.org/10.1080/10635150701883881>, <URL:
-  http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&dopt=Citation&list_uids=18253896>.
 }
 \seealso{
   \code{\link{numstates_from_numareas}},

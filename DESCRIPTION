@@ -1,8 +1,8 @@
 Package: cladoRcpp
 Type: Package
 Title: C++ implementations of phylogenetic calculations
-Version: 0.11
-Date: 2013-04-09
+Version: 0.14
+Date: 2013-06-22
 Authors@R: c(person("Nicholas J.", "Matzke", email =
         "matzke@berkeley.edu", role = c("aut", "cre", "cph")))
 Maintainer: Nicholas J. Matzke <matzke@berkeley.edu>
@@ -27,8 +27,8 @@ Description: This package implements in C++/Rcpp various
 License: GPL (>= 2)
 LazyLoad: yes
 ByteCompile: true
-Packaged: 2013-04-11 09:55:40 UTC; nickm
+Packaged: 2013-06-22 20:57:25 UTC; nickm
 Author: Nicholas J. Matzke [aut, cre, cph]
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2013-04-11 12:19:46
+Date/Publication: 2013-06-23 00:17:58

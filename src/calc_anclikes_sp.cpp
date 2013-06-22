@@ -141,6 +141,7 @@ RcppExport SEXP cpp_areas_list_to_states_list(SEXP R_areas_indices, SEXP R_maxar
 		{
 		numstates = 0;		
 		}
+	// This adds up the areas
 	for (int i=1; i<=maxareas; i++)
 		{
 		int numstates_for_this_numareas = nChoosek(total_numareas, i);
@@ -165,7 +166,8 @@ RcppExport SEXP cpp_areas_list_to_states_list(SEXP R_areas_indices, SEXP R_maxar
 		}
 	else
 		{
-		states_list_pos = 1;
+		// Just start listing states at 0!
+		states_list_pos = 0;
 		}
 
 
@@ -2659,7 +2661,8 @@ maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 						vector <int> new_lstate_areas;
 						
 						// We get a memory error here, probably because the 
-						// list rare doesn't get initialized
+						// list rarely doesn't get initialized
+						// 2013-04-10 -- FIXED & on CRAN
 						bool has_new_lstate_areas_been_initialized = false;
 						
 						for (int i=0; i<needs_to_be_removed.size(); i++)
