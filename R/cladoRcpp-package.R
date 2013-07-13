@@ -3,8 +3,8 @@
 #' \tabular{ll}{
 #' Package: \tab cladoRcpp\cr
 #' Type: \tab Package\cr
-#' Version: \tab 0.13\cr
-#' Date: \tab 2013-06-21\cr
+#' Version: \tab 0.14.2\cr
+#' Date: \tab 2013-07-13\cr
 #' License: \tab GPL (>= 3)\cr
 #' LazyLoad: \tab yes\cr
 #' }
@@ -74,6 +74,18 @@
 #' @examples
 #' 
 #' library(cladoRcpp)
+#' # Test this first as it causes problems for --gct or --use-valgrind
+#' areas_list = c("A", "B", "C")
+#' areas_list
+#' 
+#' # Calculate the list of 0-based indices for each possible 
+#' # geographic range, i.e. each combination of areas
+#' \dontrun{
+#' 
+#' states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=3, 
+#' include_null_range=FALSE)
+#' 
+#' }
 #' 
 #' #################################################################################
 #' # Examples using C++ to speed up the slow step of getting all possible combinations
@@ -146,8 +158,16 @@
 #' areas_list = c("A", "B", "C")
 #' areas_list
 #' 
+#' # Let's try Rcpp_combn_zerostart, in case that is the source of a
+#' # problem found via AddressSanitizer
+#' Rcpp_combn_zerostart(n_to_choose_from=4, k_to_choose=2, maxlim=1e+07)
+#' Rcpp_combn_zerostart(n_to_choose_from=4, k_to_choose=3, maxlim=1e+07)
+#' 
+#' 
 #' # Calculate the list of 0-based indices for each possible 
 #' # geographic range, i.e. each combination of areas
+#' \dontrun{
+#' 
 #' states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=3, 
 #' include_null_range=FALSE)
 #' states_list
@@ -160,6 +180,8 @@
 #' states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=1, 
 #' include_null_range=TRUE)
 #' states_list
+#' 
+#' }
 #' 
 #' # Hard-code the along-branch dispersal and extinction rates
 #' d = 0.2
@@ -178,6 +200,8 @@
 #' 
 #' # Set up the instantaneous rate matrix (Q matrix, Qmat)
 #' # DON'T force a sparse-style (COO-formatted) matrix here
+#' \dontrun{
+#' 
 #' force_sparse = FALSE
 #' Qmat = rcpp_states_list_to_DEmat(areas_list, states_list, dmat, elist, 
 #' include_null_range=TRUE, normalize_TF=TRUE, makeCOO_TF=force_sparse)
@@ -188,6 +212,7 @@
 #' Qmat = rcpp_states_list_to_DEmat(areas_list, states_list, dmat, elist, 
 #' include_null_range=TRUE, normalize_TF=TRUE, makeCOO_TF=force_sparse)
 #' Qmat
+#' }
 #' 
 #' 
 #' 

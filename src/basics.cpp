@@ -152,12 +152,18 @@ void moncombn_zerostart(int* combmat, int* n, int* m)
 
 // N choose K
 // http://stackoverflow.com/questions/9330915/number-of-combinations-n-choose-r-in-c
-// 
-unsigned nChoosek( unsigned n, unsigned k )
+// # Setting all just to be int; the maxval is typically just 10 million
+int nChoosek( int n, int k )
 {
+	// Error check
     if (k > n) return 0;
+    
+    // Speedup if k way bigger than n
     if (k * 2 > n) k = n-k;
-    if (k == 0) return 1;
+
+	// Error checks
+    if (k <= 0) return 1;
+    if (n <= 0) return 0;
 
     int result = n;
     for( int i = 2; i <= k; ++i ) {
@@ -171,7 +177,7 @@ unsigned nChoosek( unsigned n, unsigned k )
 // print an int vector via cout
 void printvec (vector<int> myvector1)
 	{
-	for (int i=0; i<myvector1.size(); i++)
+	for (unsigned int i=0; i<myvector1.size(); i++)
 		{
 		//std::cout << myvector1[i] << " ";
 		}
@@ -181,7 +187,7 @@ void printvec (vector<int> myvector1)
 // print an bool vector via cout
 void printBoolVec (vector<bool> myvector1)
 	{
-	for (int i=0; i<myvector1.size(); i++)
+	for (unsigned int i=0; i<myvector1.size(); i++)
 		{
 		//std::cout << myvector1[i] << " ";
 		}
@@ -249,9 +255,9 @@ bool any_ints_equal (vector<int> myvector1, vector<int> myvector2)
 	bool are_there_any_matches_TF = false;
 	
 	// j = loop through the longer (ancestral states) vector
-	for (int j=0; j < myvector2.size(); j++)
+	for (unsigned int j=0; j < myvector2.size(); j++)
 		{
-		for (int i=0; i < myvector1.size(); i++)
+		for (unsigned int i=0; i < myvector1.size(); i++)
 			{
 			if (myvector2[j] == myvector1[i])
 				{
@@ -276,12 +282,12 @@ bool all_ints_found (vector<int> myvector1, vector<int> myvector2)
 	bool did_all_vec1_match_TF = true;
 
 	// i = loop through the shorter (descendant states) vector
-	for (int i=0; i < myvector1.size(); i++)
+	for (unsigned int i=0; i < myvector1.size(); i++)
 		{
 		// j = loop through the longer (ancestral states) vector
 		bool tmp_match_found_TF = false;
 		
-		for (int j=0; j < myvector2.size(); j++)
+		for (unsigned int j=0; j < myvector2.size(); j++)
 			{
 			if (myvector1[i] == myvector2[j])
 				{
@@ -307,14 +313,14 @@ bool all_ints_found (vector<int> myvector1, vector<int> myvector2)
 // should be combined with all_ints_found TF test to avoid bugs
 int get_missing_int (vector<int> myvector1, vector<int> myvector2)
 	{
-	for (int i=0; i<myvector1.size(); i++)
+	for (unsigned int i=0; i<myvector1.size(); i++)
 		{
 		int tmp_int_to_find = myvector1[i];
 		
 		// Set the flag to false; when you find it, it will be set to
 		// true.  If this never happens, this int is missing.
 		bool tmp_int_is_in_list = false;
-		for (int j=0; j<myvector2.size(); j++)
+		for (unsigned int j=0; j<myvector2.size(); j++)
 			{
 			int tmp_int_to_that_might_match = myvector2[j];
 			

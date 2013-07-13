@@ -26,6 +26,7 @@ using namespace std;
 */
 
 
+
 RcppExport SEXP cpp_combn_zerostart(SEXP R_n, SEXP R_m, SEXP R_maxval)
 	{
 	using namespace std;
@@ -33,29 +34,45 @@ RcppExport SEXP cpp_combn_zerostart(SEXP R_n, SEXP R_m, SEXP R_maxval)
 	// Convert to plain C++
 	int cpp_nval = Rcpp::as<int>(R_n);
 	int cpp_mval = Rcpp::as<int>(R_m);
-	double cpp_maxval = Rcpp::as<double>(R_maxval);
+	int cpp_maxval = Rcpp::as<int>(R_maxval);
+	
+	// Error checks
+	// both values must be greater than 0, and n must be >= m
+	// (you can't have 5 choose 10)
+	if (cpp_nval < cpp_mval)
+		{
+		return Rcpp::wrap(0);
+		}
+	if (cpp_nval < 1)
+		{
+		return Rcpp::wrap(0);
+		}
+	if (cpp_nval < 1)
+		{
+		return Rcpp::wrap(0);
+		}
+	
 	
 	// Create pointer variables to hold the addresses to each
 	int* n = &cpp_nval;
 	int* m = &cpp_mval;
 	
 	// Choose n by m; calculate from the values stored at addresses n and m
-	double Cnm;
+	int Cnm;
 	Cnm = nChoosek(*n, *m);
 	
 	// Error check
-	if (Cnm > cpp_maxval)
+	if ((Cnm > cpp_maxval) || (Cnm < 1))
 		{
 		//cout << "\nERROR: n=" << cpp_nval << ", k=" << cpp_mval << ", n choose k=" << Cnm << " > maxval=", cpp_maxval;
 		//cout << "\nCalculating something this big may crash your computer!  Returning 0.";
-		return 0;
+		return Rcpp::wrap(0);
 		}
 	
 	
 	// Declare and populate empty array of addresses to hold the combn results
 	// Addresses for a 10x3 array; 30 total
-	int* combmat;
-	combmat = new int[(int)Cnm**(m+0)];
+	int* combmat = new int[(int)Cnm**(m+0)];
 	
 	// Run moncombn_zerostart; this will update the stuff in the addresses
 	// stored in combmat
@@ -67,12 +84,14 @@ RcppExport SEXP cpp_combn_zerostart(SEXP R_n, SEXP R_m, SEXP R_maxval)
 	int ncols;
 	nrows = *m;
 	ncols = (int)Cnm;
-	int vecsize;
-	vecsize = nrows * ncols;
+	
+	//vecsize now longer used, remove
+	//int vecsize;
+	//vecsize = nrows * ncols;
 	//int combmat_vals[nrows * ncols];
 	
 	//Rcpp::NumericVector combmat_vals(vecsize);	// vector of size vecsize filled with 0s
-	Rcpp::NumericMatrix combmat_vals(nrows,ncols);	// vector of size vecsize filled with 0s
+	Rcpp::IntegerMatrix combmat_vals(nrows,ncols);	// vector of size vecsize filled with 0s
 
 	// initialize row & column numbers, and the temporary number	
 	int rownum = 0;
@@ -108,32 +127,39 @@ RcppExport SEXP cpp_combn_zerostart(SEXP R_n, SEXP R_m, SEXP R_maxval)
 	// Convert to an int
 	//Rcpp::Matrix outcombs(combmat_vals);
 	
+	// Delete the object which combmat points to, which was opened by new
+	delete[] combmat;
+	// Set the pointer itself to NULL
+	combmat = NULL;
+	
 	// example use Armadillo matrix
 	// http://dirk.eddelbuettel.com/blog/2011/04/23/
 	//arma::mat outcombs = Rcpp::as<arma::mat>(combmat_vals);
 	
-	return Rcpp::wrap(combmat_vals);
+	//return Rcpp::wrap(combmat_vals);
+	return combmat_vals;
 	}
+
+
 	
-
-
+// areas_list here, is just a vector of indices (0, 1, 2, etc...)
 // areas_list here, is just a vector of indices (0, 1, 2, etc...)
 RcppExport SEXP cpp_areas_list_to_states_list(SEXP R_areas_indices, SEXP R_maxareas, SEXP R_include_null_range)
 	{
 	using namespace std;
 
 	/* Define the numeric vectors and put in the data into C++ from R */
-	Rcpp::NumericVector areas_indices(R_areas_indices);
+	Rcpp::IntegerVector areas_indices(R_areas_indices);
 	int maxareas = Rcpp::as<int>(R_maxareas);
 	bool include_null_range = Rcpp::as<bool>(R_include_null_range);
 	
 	// calculate the number of states, based on the number of areas
-	int total_numareas = areas_indices.size();
+	int total_numareas = (int)areas_indices.size();
 
 	// Declare numstates and initialize count with 1 or 0, depending on if null range is included
 	// (default should be TRUE)
 	int numstates;
-	if (include_null_range == 1)
+	if (include_null_range == true)
 		{
 		numstates = 1;
 		}
@@ -150,7 +176,7 @@ RcppExport SEXP cpp_areas_list_to_states_list(SEXP R_areas_indices, SEXP R_maxar
 	
 	// Create a list; make the null range NA if needed
 	Rcpp::List states_list(numstates);
-	int states_list_pos;
+	int states_list_pos = 0;
 	
 	
 	// I guess 1 == TRUE, here
@@ -161,7 +187,7 @@ RcppExport SEXP cpp_areas_list_to_states_list(SEXP R_areas_indices, SEXP R_maxar
 		
 		// insert NA
 		// http://lists.r-forge.r-project.org/pipermail/rcpp-devel/2011-February/001837.html
-		states_list[states_list_pos] = NA_REAL;
+		states_list[states_list_pos] = -1;	// NA_REAL is for float(?)
 		states_list_pos = 1;
 		}
 	else
@@ -172,27 +198,28 @@ RcppExport SEXP cpp_areas_list_to_states_list(SEXP R_areas_indices, SEXP R_maxar
 
 
 	// 
-	double tmp_R_maxval = 1e+07;
+	int tmp_R_maxval = 1e+07;
 	SEXP R_maxval = Rcpp::wrap(tmp_R_maxval);
 	
 	// Go through the states for this range size
 	for (int tmp_numareas=1; tmp_numareas<=maxareas; tmp_numareas++)
 		{
 		// declare tmp_matrix_combinations as an SEXP
-		SEXP tmp_matrix_combinations;
+		//SEXP tmp_matrix_combinations;
 		SEXP R_n = Rcpp::wrap(total_numareas);
 		SEXP R_m = Rcpp::wrap(tmp_numareas);
 		
 		// Calculate the combn matrix of areas for this rangesize
 		// Convert to NumericMatrix
-		tmp_matrix_combinations = cpp_combn_zerostart(R_n, R_m, R_maxval);
-		Rcpp::NumericMatrix combmat_vals(tmp_matrix_combinations);
+		//tmp_matrix_combinations = cpp_combn_zerostart(R_n, R_m, R_maxval);
+		//Rcpp::IntegerMatrix combmat_vals(tmp_matrix_combinations);
+		Rcpp::IntegerMatrix combmat_vals = cpp_combn_zerostart(R_n, R_m, R_maxval); // screwing with this leads to AddressSanitizer faults
 		
 		// Put the states into the states_list
 		
 		// get the number of combinations, i.e. number of columns
 		// Choose n by m; calculate from the values stored at addresses n and m
-		double Cnm;
+		int Cnm;
 		Cnm = nChoosek(total_numareas, tmp_numareas);
 		int ncols = Cnm;
 		int nrows = tmp_numareas;
@@ -224,10 +251,14 @@ RcppExport SEXP cpp_areas_list_to_states_list(SEXP R_areas_indices, SEXP R_maxar
 
 
 
+
+
+
+
 /* Rcpp function: take a geographic states list, dmat, and elist, and produce a (dense) dispersal */
 /* probability matrix. */
 /* (Later step: normalize it.) */
-RcppExport SEXP cpp_states_list_to_DEmat(SEXP R_areas_indices, SEXP R_states_indices, SEXP R_dmat, SEXP R_elist, SEXP
+RcppExport SEXP cpp_states_list_to_DEmat(SEXP R_areas_indices, SEXP R_states_indices, SEXP R_dmat, SEXP R_elist, SEXP R_amat, SEXP
 R_normalize_TF) {
 
 	using namespace std;
@@ -239,6 +270,7 @@ R_normalize_TF) {
 	Rcpp::List states_indices(R_states_indices);
 	Rcpp::NumericMatrix dmat(R_dmat);
 	Rcpp::NumericVector elist(R_elist);
+	Rcpp::NumericMatrix amat(R_amat);
 	
 	// Instead of TF, use 1/0
 	int normalize_TF = Rcpp::as<int>(R_normalize_TF);
@@ -311,9 +343,39 @@ R_normalize_TF) {
 
 			// Check that there is 1 more ending state than starting
 			// state, and that all of the starting states are inside the ending state
-			bool boolTF = false;
+			//bool boolTF = false; // not used
 
+			// Are the starting and ending range sizes both size 1?
+			// Then, amat might be relevant
+			// ALSO -- exclude start=NULL, end=NULL
+			if (( (starting_state.size() == 1) && (ending_state.size() == 1) ) && (starting_state[0] >= 0) && (ending_state[0] >= 0) )
+				{
 
+				//std::cout << starting_state.size() << "\n";
+				//std::cout << ending_state.size() << "\n";
+				
+				// We can do this since they are of size 1
+				int first_pos = 0;
+				//std::cout << first_pos << "\n";
+				
+				int ancestral_area_index = starting_state[first_pos];
+				int descendent_area_index = ending_state[first_pos];
+				
+				//std::cout << ancestral_area_index << "\n";
+				//std::cout << descendent_area_index << "\n";
+				
+				// Skip, of course, if you are on the diagonal
+				// Otherwise do it
+				if (ancestral_area_index != descendent_area_index)
+					{
+					float amat_prob = amat(ancestral_area_index, descendent_area_index);
+					//std::cout << amat_prob << "\n";
+					DEmat(i,j) = amat_prob;
+					//std::cout << DEmat(i,j) << "\n";
+					//continue;
+					}
+				}
+				
 
 
 			// Is the ending range size 1 bigger than the starting range size?
@@ -342,7 +404,7 @@ R_normalize_TF) {
 					// from dmat
 					
 					// Go through the starting areas, calculate probability
-					for (int k=0; k<starting_state.size(); k++)
+					for (unsigned int k=0; k<starting_state.size(); k++)
 						{
 						int ancestral_area_index = starting_state[k];
 						int descendent_area_index = missing_end_area;
@@ -511,7 +573,7 @@ R_normalize_TF) {
 /* Rcpp function: take a geographic states list, dmat, and elist, and produce a (COO) dispersal */
 /* probability matrix. */
 /* (Later step: normalize it.) */
-RcppExport SEXP cpp_states_list_to_DEmat_COO(SEXP R_areas_indices, SEXP R_states_indices, SEXP R_dmat, SEXP R_elist,
+RcppExport SEXP cpp_states_list_to_DEmat_COO(SEXP R_areas_indices, SEXP R_states_indices, SEXP R_dmat, SEXP R_elist, SEXP R_amat, 
 SEXP R_normalize_TF, SEXP R_min_precision) {
 
 	using namespace std;
@@ -527,6 +589,7 @@ SEXP R_normalize_TF, SEXP R_min_precision) {
 	Rcpp::List states_indices(R_states_indices);
 	Rcpp::NumericMatrix dmat(R_dmat);
 	Rcpp::NumericVector elist(R_elist);
+	Rcpp::NumericMatrix amat(R_amat);
 	
 	// Instead of TF, use 1/0
 	int normalize_TF = Rcpp::as<int>(R_normalize_TF);
@@ -588,7 +651,7 @@ SEXP R_normalize_TF, SEXP R_min_precision) {
 	int num_nonzeros;
 	num_nonzeros = 0;	// number of nonzeros
 	// initial allocation of the array size
-	int numcells = 100;
+	//int numcells = 100;	// not used
 	
 	/*
 	// Declare pointer variables; 0 means no address allocated (null pointer)
@@ -641,10 +704,37 @@ SEXP R_normalize_TF, SEXP R_min_precision) {
 
 			// Check that there is 1 more ending state than starting
 			// state, and that all of the starting states are inside the ending state
-			bool boolTF = false;
+			//bool boolTF = false;	// not used
 
 
+			// Are the starting and ending range sizes both size 1?
+			// Then, amat might be relevant
+			// EXCLUDE NULL ranges
+			if (( (starting_state.size() == 1) && (ending_state.size() == 1) ) && (starting_state[0] >= 0) && (ending_state[0] >= 0) )
+				{
+				// We can do this since they are of size 1
+				int ancestral_area_index = starting_state[0];
+				int descendent_area_index = ending_state[0];
+				
+				// Skip, of course, if you are on the diagonal
+				// Otherwise do it
+				if (ancestral_area_index != descendent_area_index)
+					{
+					tmpval = amat(ancestral_area_index, descendent_area_index);
+					float amat_prob = amat(ancestral_area_index, descendent_area_index);
+					tmpval = amat_prob;
 
+					// If tmpval is >0, push to output list
+					if (tmpval >= zero_14_digit_precision)
+						{
+						num_nonzeros++;
+						ia.push_back(j+1);
+						ja.push_back(i+1);
+						a.push_back(tmpval);
+						}
+					continue;
+					}
+				}
 
 			// Is the ending range size 1 bigger than the starting range size?
 			if ( (starting_state.size()+1) == ending_state.size() )
@@ -672,7 +762,7 @@ SEXP R_normalize_TF, SEXP R_min_precision) {
 					// from dmat
 					
 					// Go through the starting areas, calculate probability
-					for (int k=0; k<starting_state.size(); k++)
+					for (unsigned int k=0; k<starting_state.size(); k++)
 						{
 						int ancestral_area_index = starting_state[k];
 						int descendent_area_index = missing_end_area;
@@ -881,7 +971,7 @@ max_minsize_as_function_of_ancsize, SEXP Rsp_rowsums) {
 	using namespace std;
 	
 	/* print if Rprintmat == 1 */
-	int printmat = Rcpp::as<int>(Rprintmat);
+	//int printmat = Rcpp::as<int>(Rprintmat);
 	//if (printmat == 1) {cout << "BEGIN probs_to_use:" << "\n";};
 	
 	/* Define the numeric vectors and put in the data into C++ from R */
@@ -1051,9 +1141,9 @@ max_minsize_as_function_of_ancsize, SEXP Rsp_rowsums) {
 							float jprob_for_cell_based_on_distances = 0.0;
 							if (try_jump_dispersal_based_on_dist == 1)
 								{
-								for (int ancarea_i=0; ancarea_i<ancestral_areas.size(); ancarea_i++)
+								for (unsigned int ancarea_i=0; ancarea_i<ancestral_areas.size(); ancarea_i++)
 									{
-									for (int decarea_i=0; decarea_i<rstate_areas.size(); decarea_i++)
+									for (unsigned int decarea_i=0; decarea_i<rstate_areas.size(); decarea_i++)
 										{
 										jprob_for_cell_based_on_distances = jprob_for_cell_based_on_distances +
 	dmatc(ancestral_areas[ancarea_i], rstate_areas[decarea_i]);
@@ -1119,9 +1209,9 @@ max_minsize_as_function_of_ancsize, SEXP Rsp_rowsums) {
 							float jprob_for_cell_based_on_distances = 0.0;
 							if (try_jump_dispersal_based_on_dist == 1)
 								{
-								for (int ancarea_i=0; ancarea_i<ancestral_areas.size(); ancarea_i++)
+								for (unsigned int ancarea_i=0; ancarea_i<ancestral_areas.size(); ancarea_i++)
 									{
-									for (int decarea_i=0; decarea_i<lstate_areas.size(); decarea_i++)
+									for (unsigned int decarea_i=0; decarea_i<lstate_areas.size(); decarea_i++)
 										{
 										jprob_for_cell_based_on_distances = jprob_for_cell_based_on_distances +
 	dmatc(ancestral_areas[ancarea_i], lstate_areas[decarea_i]);
@@ -1230,7 +1320,7 @@ max_minsize_as_function_of_ancsize) {
 	using namespace std;
 
 	/* print if Rprintmat == 1 */
-	int printmat = Rcpp::as<int>(Rprintmat);
+	//int printmat = Rcpp::as<int>(Rprintmat);
 	//if (printmat == 1) {cout << "BEGIN raw_probs_for_rowSums:" << "\n";};
 
 	/* Define the numeric vectors and put in the data into C++ from R */
@@ -1390,21 +1480,21 @@ max_minsize_as_function_of_ancsize) {
 					
 
 					//cout << "ancestral_areas:" << endl;
-					for (int m=0; m<ancestral_areas.size(); m++)
+					for (unsigned int m=0; m<ancestral_areas.size(); m++)
 						{
 						//cout << ancestral_areas[m] << " ";
 						}
 					//cout << endl;
 
 					//cout << "lstate_areas:" << endl;
-					for (int m=0; m<lstate_areas.size(); m++)
+					for (unsigned int m=0; m<lstate_areas.size(); m++)
 						{
 						//cout << lstate_areas[m] << " ";
 						}
 					//cout << endl;
 
 					//cout << "rstate_areas:" << endl;
-					for (int m=0; m<rstate_areas.size(); m++)
+					for (unsigned int m=0; m<rstate_areas.size(); m++)
 						{
 						//cout << rstate_areas[m] << " ";
 						}
@@ -1449,9 +1539,9 @@ max_minsize_as_function_of_ancsize) {
 							float jprob_for_cell_based_on_distances = 0.0;
 							if (try_jump_dispersal_based_on_dist == 1)
 								{
-								for (int ancarea_i=0; ancarea_i<ancestral_areas.size(); ancarea_i++)
+								for (unsigned int ancarea_i=0; ancarea_i<ancestral_areas.size(); ancarea_i++)
 									{
-									for (int decarea_i=0; decarea_i<rstate_areas.size(); decarea_i++)
+									for (unsigned int decarea_i=0; decarea_i<rstate_areas.size(); decarea_i++)
 										{
 										jprob_for_cell_based_on_distances = jprob_for_cell_based_on_distances +
 	dmatc(ancestral_areas[ancarea_i], rstate_areas[decarea_i]);
@@ -1516,9 +1606,9 @@ max_minsize_as_function_of_ancsize) {
 							float jprob_for_cell_based_on_distances = 0.0;
 							if (try_jump_dispersal_based_on_dist == 1)
 								{
-								for (int ancarea_i=0; ancarea_i<ancestral_areas.size(); ancarea_i++)
+								for (unsigned int ancarea_i=0; ancarea_i<ancestral_areas.size(); ancarea_i++)
 									{
-									for (int decarea_i=0; decarea_i<lstate_areas.size(); decarea_i++)
+									for (unsigned int decarea_i=0; decarea_i<lstate_areas.size(); decarea_i++)
 										{
 										jprob_for_cell_based_on_distances = jprob_for_cell_based_on_distances +
 	dmatc(ancestral_areas[ancarea_i], lstate_areas[decarea_i]);
@@ -1604,6 +1694,7 @@ ancestral_areas)==true)  )
 	//if (printmat == 1) {cout << "END raw_probs_for_rowSums\n";};
 	//if (printmat == 1) {cout << "\n";};
 	
+	/*
 	if (printmat == 1) {
 		//cout << "BEGIN sp_rowsums\n";
 		for (int i=0; i<sp_rowsums.size(); i++)
@@ -1612,6 +1703,7 @@ ancestral_areas)==true)  )
 			}
 		//cout << "END sp_rowsums\n";
 		};
+	*/
 	//if (printmat == 1) {cout << "\n";};
 	
 	
@@ -1659,7 +1751,7 @@ max_minsize_as_function_of_ancsize) {
 	float min_precision = 1e-30;
 
 	/* print if Rprintmat == 1 */
-	int printmat = Rcpp::as<int>(Rprintmat);
+	//int printmat = Rcpp::as<int>(Rprintmat);
 	//if (printmat == 1) {cout << "BEGIN cpp_calc_anclikes_sp_COOprobs()" << "\n";};
 
 	/* Define the numeric vectors and put in the data into C++ from R */
@@ -1841,21 +1933,21 @@ max_minsize_as_function_of_ancsize) {
 					
 
 					//cout << "ancestral_areas:" << endl;
-					for (int m=0; m<ancestral_areas.size(); m++)
+					for (unsigned int m=0; m<ancestral_areas.size(); m++)
 						{
 						//cout << ancestral_areas[m] << " ";
 						}
 					//cout << endl;
 
 					//cout << "lstate_areas:" << endl;
-					for (int m=0; m<lstate_areas.size(); m++)
+					for (unsigned int m=0; m<lstate_areas.size(); m++)
 						{
 						//cout << lstate_areas[m] << " ";
 						}
 					//cout << endl;
 
 					//cout << "rstate_areas:" << endl;
-					for (int m=0; m<rstate_areas.size(); m++)
+					for (unsigned int m=0; m<rstate_areas.size(); m++)
 						{
 						//cout << rstate_areas[m] << " ";
 						}
@@ -1900,9 +1992,9 @@ max_minsize_as_function_of_ancsize) {
 							float jprob_for_cell_based_on_distances = 0.0;
 							if (try_jump_dispersal_based_on_dist == 1)
 								{
-								for (int ancarea_i=0; ancarea_i<ancestral_areas.size(); ancarea_i++)
+								for (unsigned int ancarea_i=0; ancarea_i<ancestral_areas.size(); ancarea_i++)
 									{
-									for (int decarea_i=0; decarea_i<rstate_areas.size(); decarea_i++)
+									for (unsigned int decarea_i=0; decarea_i<rstate_areas.size(); decarea_i++)
 										{
 										jprob_for_cell_based_on_distances = jprob_for_cell_based_on_distances +
 	dmatc(ancestral_areas[ancarea_i], rstate_areas[decarea_i]);
@@ -1986,9 +2078,9 @@ max_minsize_as_function_of_ancsize) {
 							float jprob_for_cell_based_on_distances = 0.0;
 							if (try_jump_dispersal_based_on_dist == 1)
 								{
-								for (int ancarea_i=0; ancarea_i<ancestral_areas.size(); ancarea_i++)
+								for (unsigned int ancarea_i=0; ancarea_i<ancestral_areas.size(); ancarea_i++)
 									{
-									for (int decarea_i=0; decarea_i<lstate_areas.size(); decarea_i++)
+									for (unsigned int decarea_i=0; decarea_i<lstate_areas.size(); decarea_i++)
 										{
 										jprob_for_cell_based_on_distances = jprob_for_cell_based_on_distances +
 	dmatc(ancestral_areas[ancarea_i], lstate_areas[decarea_i]);
@@ -2115,6 +2207,7 @@ ancestral_areas)==true)  )
 	//if (printmat == 1) {cout << "END cpp_calc_anclikes_sp_COOprobs()\n";};
 	//if (printmat == 1) {cout << "\n";};
 	
+	/*
 	if (printmat == 1) {
 		//cout << "BEGIN sp_rowsums\n";
 		for (int i=0; i<sp_rowsums.size(); i++)
@@ -2123,6 +2216,7 @@ ancestral_areas)==true)  )
 			}
 		//cout << "END sp_rowsums\n";
 		};
+	*/
 	//if (printmat == 1) {cout << "\n";};
 	
 	
@@ -2205,9 +2299,11 @@ maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 	//std::cout << "A0" << endl;
 
 	float min_precision = 1e-30;
-
+	min_precision = min_precision + 0.0; 	// just so that it's used
 	/* print if Rprintmat == 1 */
-	int printmat = Rcpp::as<int>(Rprintmat);
+	
+	//printmat not needed now that we've commented out all printmats
+	//int printmat = Rcpp::as<int>(Rprintmat);
 	//if (printmat == 1) {cout << "BEGIN cpp_calc_anclikes_sp_COOprobs_fast()" << "\n";};
 
 	/* Define the numeric vectors and put in the data into C++ from R */
@@ -2237,7 +2333,7 @@ maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 	
 	/* Get the sizes of the vectors */
 	int n_xa = xa.size();
-	int n_xb = xb.size();
+	//int n_xb = xb.size();	// not used
 	int numstates = xl.size();
 
 	
@@ -2333,6 +2429,8 @@ maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 		
 		/* count the number of states we put in; this is the actual size of the output vector */
 		int filled_counter = 0;
+		filled_counter = filled_counter + 0;	// just so it gets used
+
 		
 		// Go through each ancestral state
 		for (int l = 0; l < numstates; l++)
@@ -2410,6 +2508,7 @@ maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 
 		/* count the number of states we put in; this is the actual size of the output vector */
 		int filled_counter = 0;
+		filled_counter = filled_counter + 0;	// just so it gets used
 		
 		//if (printmat >= 1) {cout << "checkpoint 1" << "\n";};
 
@@ -2435,13 +2534,15 @@ maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 
 			// Go through the states of the possible smaller descendants
 			//if (printmat >= 1) {cout << "checkpoint 2" << "\n";};
+			// NOTE: This for-loop needs "int", not "unsigned int", because only .size() functions return unsigned int
 			for (int desc_size=1; desc_size<=max_min_rangesize_c[(ancsize-1)]; desc_size++)
 				{
 				//if (printmat >= 1) {cout << desc_size << "	" << max_min_rangesize_c[(ancsize-1)] << "	" << ancsize << "	" << ancsize-1 << "	" << range_size_category_indexes.size() << "\n";};
 				
 				// Error check so you don't overflow at e.g. 3 areas in anc and desc
 				// (shouldn't happen, but still)
-				if (desc_size >= range_size_category_indexes.size())
+				int tmpsize = (int) range_size_category_indexes.size();		// recast the .size() unsigned int as int
+				if (desc_size >= tmpsize)
 					{
 					continue;
 					}
@@ -2549,6 +2650,8 @@ maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 		
 		/* count the number of states we put in; this is the actual size of the output vector */
 		int filled_counter = 0;
+		filled_counter = filled_counter + 0;	// just so it gets used
+
 		//std::cout << "A4.1" << endl;
 		
 		// Go through each ancestral state of range size 2 or greater
@@ -2574,11 +2677,13 @@ maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 			//std::cout << "A4.2" << endl;
 
 			// Go through the states of the possible smaller descendants
+			// NOTE: This for-loop needs "int", not "unsigned int", because only .size() functions return unsigned int
 			for (int desc_size=1; desc_size<=max_min_rangesize_c[(ancsize-1)]; desc_size++)
 				{
 				// Error check so you don't overflow at e.g. 3 areas in anc and desc
 				// (shouldn't happen, but still)
-				if (desc_size >= range_size_category_indexes.size())
+				int tmpsize = (int) range_size_category_indexes.size();		// recast the .size() unsigned int as int
+				if (desc_size >= tmpsize)
 					{
 					continue;
 					}
@@ -2591,6 +2696,7 @@ maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 
 				
 				// Go through the appropriate state indexes
+				// NOTE: This for-loop needs "int", not "unsigned int", because only .size() functions return unsigned int
 				for (int state_index=start_state_index; state_index <= end_state_index; state_index++)
 					{
 					/* areas on the right branch; and size */
@@ -2612,7 +2718,7 @@ maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 						// OLD: remove rstates do in reverse order to avoid fuckups
 						// find the states to remove
 						vector<bool> needs_to_be_removed(lstate_areas.size());
-						for (int larea_index=0; larea_index < lstate_areas.size(); larea_index++)
+						for (unsigned int larea_index=0; larea_index < lstate_areas.size(); larea_index++)
 							{
 							// Check if the ancestral area is in rstate_areas; if so, remove
 							// vector contains ONE int with value lstate_areas[larea_index]
@@ -2665,7 +2771,7 @@ maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 						// 2013-04-10 -- FIXED & on CRAN
 						bool has_new_lstate_areas_been_initialized = false;
 						
-						for (int i=0; i<needs_to_be_removed.size(); i++)
+						for (unsigned int i=0; i<needs_to_be_removed.size(); i++)
 							{
 							if (needs_to_be_removed[i] == false)
 								{
@@ -2815,6 +2921,7 @@ maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 		
 		/* count the number of states we put in; this is the actual size of the output vector */
 		int filled_counter = 0;
+		filled_counter = filled_counter + 0;	// just so it gets used
 		
 		// Go through each ancestral state of range size 2 or greater
 		for (int l = 0; l < numstates; l++)
@@ -2838,11 +2945,13 @@ maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 			// OUTSIDE the anc areas--the tough thing here is that you don't have the indexes
 
 			// Go through the states of the possible smaller descendants
+			// NOTE: This for-loop needs "int", not "unsigned int", because only .size() functions return unsigned int
 			for (int desc_size=1; desc_size<=max_min_rangesize_c[(ancsize-1)]; desc_size++)
 				{
 				// Error check so you don't overflow at e.g. 3 areas in anc and desc
 				// (shouldn't happen, but still)
-				if (desc_size >= range_size_category_indexes.size())
+				int tmpsize = (int) range_size_category_indexes.size();		// recast the .size() unsigned int as int
+				if (desc_size >= tmpsize)
 					{
 					continue;
 					}
@@ -2870,9 +2979,9 @@ maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 						float jprob_for_cell_based_on_distances = 0.0;
 						if (try_jump_dispersal_based_on_dist == 1)
 							{
-							for (int ancarea_i=0; ancarea_i<ancestral_areas.size(); ancarea_i++)
+							for (unsigned int ancarea_i=0; ancarea_i<ancestral_areas.size(); ancarea_i++)
 								{
-								for (int decarea_i=0; decarea_i<rstate_areas.size(); decarea_i++)
+								for (unsigned int decarea_i=0; decarea_i<rstate_areas.size(); decarea_i++)
 									{
 									jprob_for_cell_based_on_distances = jprob_for_cell_based_on_distances +
 dmatc(ancestral_areas[ancarea_i], rstate_areas[decarea_i]);
@@ -2946,6 +3055,7 @@ jprob_for_cell_based_on_distances;
 	//if (printmat == 1) {cout << "END cpp_calc_anclikes_sp_COOweights_faster()\n";};
 	//if (printmat == 1) {cout << "\n";};
 	//std::cout << "A9" << endl;
+
 
 	
 	//return sp_rowsums;
@@ -3061,10 +3171,10 @@ RCOO_left_i_list, SEXP RCOO_right_j_list, SEXP RCOO_probs_list, SEXP Rsp_rowsums
 	{
 	using namespace std;
 
-	float min_precision = 1e-30;
+	//float min_precision = 1e-30; // not used
 
 	/* print if Rprintmat == 1 */
-	int printmat = Rcpp::as<int>(Rprintmat);
+	//int printmat = Rcpp::as<int>(Rprintmat);	// not used
 	//if (printmat == 1) {cout << "BEGIN cpp_calc_anclikes_sp_using_COOprobs()" << "\n";};
 
 	/* Define the numeric vectors and put in the data into C++ from R */
@@ -3088,7 +3198,7 @@ RCOO_left_i_list, SEXP RCOO_right_j_list, SEXP RCOO_probs_list, SEXP Rsp_rowsums
 		
 		// Go through the nonzero cells for this particular row/ancestral state and add them up
 		float tmp_probval = 0.0;
-		for (int n=0; n<left_state_indices.size(); n++)
+		for (unsigned int n=0; n<left_state_indices.size(); n++)
 			{
 			// Take the probability of the left descendant, times the right descendant, times the prob of that
 			// split given the ancestor, divided by the sum of the probs for this row when prob of each left and right

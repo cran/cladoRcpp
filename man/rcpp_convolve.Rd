@@ -46,6 +46,14 @@ convolve(ca, cb, conj=TRUE, type="open")
   Romain Francois (2011); This R wrapper & documentation:
   Nicholas Matzke \email{matzke@berkeley.edu}
 }
+\references{
+  Eddelbuettel D and Francois R (2011). "Rcpp: Seamless R
+  and C++ Integration." _Journal of Statistical Software_,
+  *40*(8), pp. 1-18. ISSN 1548-7660, See also:
+  http://cran.r-project.org/web/packages/Rcpp/vignettes/Rcpp-introduction.pdf
+  , http://cran.r-project.org/web/packages/Rcpp/index.html
+  , <URL: http://www.jstatsoft.org/v40/i08>.
+}
 \seealso{
   \code{\link[Rcpp]{Rcpp}}, \code{\link{convolve}},
   \code{\link{rcpp_mult2probvect}},

@@ -8,8 +8,9 @@
 }
 \details{
   \tabular{ll}{ Package: \tab cladoRcpp\cr Type: \tab
-  Package\cr Version: \tab 0.14\cr Date: \tab 2013-06-22\cr
-  License: \tab GPL (>= 3)\cr LazyLoad: \tab yes\cr }
+  Package\cr Version: \tab 0.14.2\cr Date: \tab
+  2013-07-13\cr License: \tab GPL (>= 3)\cr LazyLoad: \tab
+  yes\cr }
 
   \bold{Summary:} This package implements in C++/Rcpp
   various cladogenesis-related calculations that are slow
@@ -102,6 +103,18 @@
 }
 \examples{
 library(cladoRcpp)
+# Test this first as it causes problems for --gct or --use-valgrind
+areas_list = c("A", "B", "C")
+areas_list
+
+# Calculate the list of 0-based indices for each possible
+# geographic range, i.e. each combination of areas
+\dontrun{
+
+states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=3,
+include_null_range=FALSE)
+
+}
 
 #################################################################################
 # Examples using C++ to speed up the slow step of getting all possible combinations
@@ -174,8 +187,16 @@ numstates_from_numareas(numareas=20, maxareas=3, include_null_range=TRUE)
 areas_list = c("A", "B", "C")
 areas_list
 
+# Let's try Rcpp_combn_zerostart, in case that is the source of a
+# problem found via AddressSanitizer
+Rcpp_combn_zerostart(n_to_choose_from=4, k_to_choose=2, maxlim=1e+07)
+Rcpp_combn_zerostart(n_to_choose_from=4, k_to_choose=3, maxlim=1e+07)
+
+
 # Calculate the list of 0-based indices for each possible
 # geographic range, i.e. each combination of areas
+\dontrun{
+
 states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=3,
 include_null_range=FALSE)
 states_list
@@ -188,6 +209,8 @@ states_list
 states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=1,
 include_null_range=TRUE)
 states_list
+
+}
 
 # Hard-code the along-branch dispersal and extinction rates
 d = 0.2
@@ -206,6 +229,8 @@ elist
 
 # Set up the instantaneous rate matrix (Q matrix, Qmat)
 # DON'T force a sparse-style (COO-formatted) matrix here
+\dontrun{
+
 force_sparse = FALSE
 Qmat = rcpp_states_list_to_DEmat(areas_list, states_list, dmat, elist,
 include_null_range=TRUE, normalize_TF=TRUE, makeCOO_TF=force_sparse)
@@ -216,6 +241,7 @@ force_sparse = TRUE
 Qmat = rcpp_states_list_to_DEmat(areas_list, states_list, dmat, elist,
 include_null_range=TRUE, normalize_TF=TRUE, makeCOO_TF=force_sparse)
 Qmat
+}
 
 
 
@@ -810,6 +836,34 @@ corrected_condlikes_list
 }
 \references{
   \url{http://phylo.wikidot.com/biogeobears}
+
+  Matzke N (2012). "Founder-event speciation in BioGeoBEARS
+  package dramatically improves likelihoods and alters
+  parameter inference in Dispersal-Extinction-Cladogenesis
+  (DEC) analyses." _Frontiers of Biogeography_, *4*(suppl.
+  1), pp. 210. ISSN 1948-6596, Poster abstract published in
+  the Conference Program and Abstracts of the International
+  Biogeography Society 6th Biannual Meeting, Miami,
+  Florida. Poster Session P10: Historical and
+  Paleo-Biogeography. Poster 129B. January 11, 2013, <URL:
+  \url{http://phylo.wikidot.com/matzke-2013-international-biogeography-society-poster}>.
+
+  Ree RH, Moore BR, Webb CO and Donoghue MJ (2005). "A
+  likelihood framework for inferring the evolution of
+  geographic range on phylogenetic trees." _Evolution_,
+  *59*(11), pp. 2299-311. Ree, Richard H Moore, Brian R
+  Webb, Campbell O Donoghue, Michael J Research Support,
+  U.S. Gov't, Non-P.H.S. United States Evolution;
+  international journal of organic evolution Evolution.
+  2005 Nov;59(11):2299-311., <URL:
+  http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&dopt=Citation&list_uids=16396171>.
+
+  Ree RH and Smith SA (2008). "Maximum likelihood inference
+  of geographic range evolution by dispersal, local
+  extinction, and cladogenesis." _Systematic Biology_,
+  *57*(1), pp. 4-14. <URL:
+  http://dx.doi.org/10.1080/10635150701883881>, <URL:
+  http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&dopt=Citation&list_uids=18253896>.
 }
 \seealso{
   \code{\link{rcpp_calc_anclikes_sp}},

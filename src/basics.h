@@ -17,7 +17,7 @@ extern "C" std::vector<int> merge_int_vectors(std::vector<int> myvector1, std::v
 
 extern "C" void moncombn(int* combmat, int* n, int* m);
 extern "C" void moncombn_zerostart(int* combmat, int* n, int* m);
-extern "C" unsigned nChoosek( unsigned n, unsigned k );
+extern "C" int nChoosek( int n, int k );
 
 extern "C" int get_missing_int(std::vector<int> myvector1, std::vector<int> myvector2);
 extern "C" void printvec (std::vector<int> myvector1);

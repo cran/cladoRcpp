@@ -3,8 +3,9 @@
 \title{C++ conversion of a states list to a dispersal-extinction matrix (DEmat)}
 \usage{
   rcpp_states_list_to_DEmat(areas_list, states_list, dmat,
-    elist, include_null_range = TRUE, normalize_TF = TRUE,
-    makeCOO_TF = FALSE, min_precision = 1e-26)
+    elist, amat = NULL, include_null_range = TRUE,
+    normalize_TF = TRUE, makeCOO_TF = FALSE,
+    min_precision = 1e-26)
 }
 \arguments{
   \item{areas_list}{a list of lists of areas (numbers,
@@ -16,6 +17,10 @@
   \item{dmat}{dispersal matrix from area to area}
 
   \item{elist}{a list of extinction probabilities}
+
+  \item{amat}{A matrix specifying the probability of
+  instantaneous transition from one area to another (as in
+  standard character rate matrices).}
 
   \item{include_null_range}{include the null () range (NA)
   in the matrix (LAGRANGE default=TRUE)}
@@ -54,8 +59,14 @@
 }
 \examples{
 # Specify the areas
-areas_list = c("A", "B", "C")
+areas_list_txt = c("A", "B", "C")
+areas_list_txt
+
+# rcpp_states_list_to_DEmat function requires a 0-based list of areas
+areas_list = seq(0, length(areas_list_txt)-1, 1)
 areas_list
+
+\dontrun{
 
 # Calculate the list of 0-based indices for each possible
 #geographic range, i.e. each combination of areas
@@ -99,12 +110,49 @@ force_sparse = TRUE
 Qmat = rcpp_states_list_to_DEmat(areas_list, states_list, dmat, elist,
 include_null_range=TRUE, normalize_TF=TRUE, makeCOO_TF=force_sparse)
 Qmat
+
+
+# Repeat with an amat
+amat = dmat
+amat[is.numeric(amat)] = 0.33
+
+# Set up the instantaneous rate matrix (Q matrix, Qmat)
+# DON'T force a sparse-style (COO-formatted) matrix here
+force_sparse = FALSE
+Qmat = rcpp_states_list_to_DEmat(areas_list, states_list, dmat, elist, amat,
+include_null_range=TRUE, normalize_TF=TRUE, makeCOO_TF=force_sparse)
+Qmat
+
+# DO force a sparse-style (COO-formatted) matrix here
+force_sparse = TRUE
+Qmat = rcpp_states_list_to_DEmat(areas_list, states_list, dmat, elist, amat,
+include_null_range=TRUE, normalize_TF=TRUE, makeCOO_TF=force_sparse)
+Qmat
+}
 }
 \author{
   Nicholas Matzke \email{matzke@berkeley.edu}
 }
 \references{
   \url{http://en.wikipedia.org/wiki/Sparse_matrix#Coordinate_list_.28COO.29}
+
+  Matzke N (2012). "Founder-event speciation in BioGeoBEARS
+  package dramatically improves likelihoods and alters
+  parameter inference in Dispersal-Extinction-Cladogenesis
+  (DEC) analyses." _Frontiers of Biogeography_, *4*(suppl.
+  1), pp. 210. ISSN 1948-6596, Poster abstract published in
+  the Conference Program and Abstracts of the International
+  Biogeography Society 6th Biannual Meeting, Miami,
+  Florida. Poster Session P10: Historical and
+  Paleo-Biogeography. Poster 129B. January 11, 2013, <URL:
+  \url{http://phylo.wikidot.com/matzke-2013-international-biogeography-society-poster}>.
+
+  Ree RH and Smith SA (2008). "Maximum likelihood inference
+  of geographic range evolution by dispersal, local
+  extinction, and cladogenesis." _Systematic Biology_,
+  *57*(1), pp. 4-14. <URL:
+  http://dx.doi.org/10.1080/10635150701883881>, <URL:
+  http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&dopt=Citation&list_uids=18253896>.
 }
 \seealso{
   \code{\link{numstates_from_numareas}},

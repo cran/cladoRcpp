@@ -1,0 +1,39 @@
+      CHANGES in cladoRcpp VERSION 0.14.2
+
+NEW FEATURES
+
+    o Version 0.14.2 of package cladoRcpp fixes an AddressSanitizer error found when 
+      compiling under gcc48, and some notes found by Uwe Ligges's WinBuilder website, due
+      unused variables, or comparison of int to unsigned int in e.g. for loops. (For
+      the latter, the vector object's .size() function returns an unsigned int, so
+      the forloop should start with for (unsigned int i, ...etc.)  )
+
+BUG FIXES
+
+    o none
+
+OTHER CHANGES
+
+    o none
+    
+    
+      CHANGES in cladoRcpp VERSION 0.14.1
+
+NEW FEATURES
+
+    o Version 0.14.1 of package cladoRcpp adds to the function rcpp_states_list_to_DEmat
+      (and thus C++ functions cpp_states_list_to_DEmat_COO and cpp_states_list_to_DEmat) 
+      the input of "amat", a matrix of anagenetic transition probabilities for e.g. 
+      instantaneous switching from A->B.  This allows cladoRcpp users to implement 
+      "standard" character transition models, as used in e.g. DNA, morphology 
+      characters, etc., as well as in biogeography.  Additional of this parameter allows 
+      increased modeling capabilities in BioGeoBEARS.  I have also added a NEWS file.
+
+BUG FIXES
+
+    o none
+
+OTHER CHANGES
+
+    o none
+    

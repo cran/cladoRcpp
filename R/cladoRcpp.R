@@ -298,7 +298,15 @@ areas_list_to_states_list_old <- function(areas=c("A","B","C"), maxareas=length(
 #' # Specify the areas
 #' areas_list = c("A", "B", "C")
 #' areas_list
+#' 
+#' # Let's try Rcpp_combn_zerostart, in case that is the source of a
+#' # problem found via AddressSanitizer
+#' Rcpp_combn_zerostart(n_to_choose_from=4, k_to_choose=2, maxlim=1e+07)
+#' Rcpp_combn_zerostart(n_to_choose_from=4, k_to_choose=3, maxlim=1e+07)
 #'
+#'
+#' \dontrun{
+#' 
 #' # Calculate the list of 0-based indices for each possible geographic range, i.e.
 #' # each combination of areas
 #' states_list = rcpp_areas_list_to_states_list(areas=areas_list, maxareas=3, 
@@ -314,6 +322,8 @@ areas_list_to_states_list_old <- function(areas=c("A","B","C"), maxareas=length(
 #' include_null_range=TRUE)
 #' states_list
 #' 
+#' }
+#' 
 rcpp_areas_list_to_states_list <- function(areas=c("A","B","C"), maxareas=length(areas), include_null_range=TRUE)
 	{
 	# Error trap
@@ -326,7 +336,7 @@ rcpp_areas_list_to_states_list <- function(areas=c("A","B","C"), maxareas=length
 	nstates = numstates_from_numareas(numareas=length(areas), maxareas=maxareas, include_null_range=include_null_range)
 	
 	R_areas_indices = seq(0, length(areas)-1, 1)
-	R_states_list = as.list(rep(NA, times=nstates))
+	R_states_list = as.list(rep(-1, times=nstates))
 	R_maxareas = maxareas
 	R_include_null_range = include_null_range
 
@@ -341,9 +351,18 @@ rcpp_areas_list_to_states_list <- function(areas=c("A","B","C"), maxareas=length
 # 	
 # 	length_output = nrows * ncols
 # 	
-	
-	R_states_list = .Call("cpp_areas_list_to_states_list", as.integer(R_areas_indices), as.integer(R_maxareas), R_include_null_range)
 
+	
+	R_states_list = .Call("cpp_areas_list_to_states_list", as.integer(R_areas_indices), as.integer(R_maxareas), as.logical(R_include_null_range))
+	
+	if (include_null_range == TRUE)
+		{
+		# First item may be NULL
+		if (R_states_list[[1]] == -1)
+			{
+			R_states_list[[1]] = NA
+			}
+		}
 
 	return(R_states_list)
 	}
@@ -367,6 +386,7 @@ rcpp_areas_list_to_states_list <- function(areas=c("A","B","C"), maxareas=length
 #' @param states_list a list of lists of areas (numbers, starting with 0)
 #' @param dmat dispersal matrix from area to area
 #' @param elist a list of extinction probabilities
+#' @param amat A matrix specifying the probability of instantaneous transition from one area to another (as in standard character rate matrices).
 #' @param include_null_range include the null () range (NA) in the matrix (LAGRANGE default=TRUE)
 #' @param normalize_TF should the columns be -1 * rowsums?
 #' @param makeCOO_TF should the returned matrix be COO or standard dense (the latter is default).
@@ -382,8 +402,14 @@ rcpp_areas_list_to_states_list <- function(areas=c("A","B","C"), maxareas=length
 #' @author Nicholas Matzke \email{matzke@@berkeley.edu}
 #' @examples
 #' # Specify the areas
-#' areas_list = c("A", "B", "C")
+#' areas_list_txt = c("A", "B", "C")
+#' areas_list_txt
+#' 
+#' # rcpp_states_list_to_DEmat function requires a 0-based list of areas
+#' areas_list = seq(0, length(areas_list_txt)-1, 1)
 #' areas_list
+#' 
+#' \dontrun{
 #' 
 #' # Calculate the list of 0-based indices for each possible 
 #' #geographic range, i.e. each combination of areas
@@ -428,8 +454,38 @@ rcpp_areas_list_to_states_list <- function(areas=c("A","B","C"), maxareas=length
 #' include_null_range=TRUE, normalize_TF=TRUE, makeCOO_TF=force_sparse)
 #' Qmat
 #' 
-rcpp_states_list_to_DEmat <- function(areas_list, states_list, dmat, elist, include_null_range=TRUE, normalize_TF=TRUE, makeCOO_TF=FALSE, min_precision=1e-26)
+#' 
+#' # Repeat with an amat
+#' amat = dmat
+#' amat[is.numeric(amat)] = 0.33
+#' 
+#' # Set up the instantaneous rate matrix (Q matrix, Qmat)
+#' # DON'T force a sparse-style (COO-formatted) matrix here
+#' force_sparse = FALSE
+#' Qmat = rcpp_states_list_to_DEmat(areas_list, states_list, dmat, elist, amat, 
+#' include_null_range=TRUE, normalize_TF=TRUE, makeCOO_TF=force_sparse)
+#' Qmat
+#' 
+#' # DO force a sparse-style (COO-formatted) matrix here
+#' force_sparse = TRUE
+#' Qmat = rcpp_states_list_to_DEmat(areas_list, states_list, dmat, elist, amat, 
+#' include_null_range=TRUE, normalize_TF=TRUE, makeCOO_TF=force_sparse)
+#' Qmat
+#' }
+#' 
+#' 
+
+rcpp_states_list_to_DEmat <- function(areas_list, states_list, dmat, elist, amat=NULL, include_null_range=TRUE, normalize_TF=TRUE, makeCOO_TF=FALSE, min_precision=1e-26)
 	{
+	
+	# If amat is NULL, give it 0s
+	if (is.null(amat))
+		{
+		amat = dmat
+		amat[is.numeric(amat)] = 0.0
+		amat
+		}
+	
 	
 	# Initialize the states_list to the correct size
 	#nstates = numstates_from_numareas(numareas=length(areas), maxareas=maxareas, include_null_range=include_null_range)
@@ -460,12 +516,12 @@ rcpp_states_list_to_DEmat <- function(areas_list, states_list, dmat, elist, incl
 	# Convert TF to 1/0
 	if (makeCOO_TF == TRUE)
 		{
-		DEmat_COO = .Call("cpp_states_list_to_DEmat_COO", as.list(R_areas_indices), as.list(R_states_list), as.matrix(dmat), as.numeric(elist), as.integer(R_normalize_TF), as.numeric(min_precision))
+		DEmat_COO = .Call("cpp_states_list_to_DEmat_COO", as.list(R_areas_indices), as.list(R_states_list), as.matrix(dmat), as.numeric(elist), as.matrix(amat), as.integer(R_normalize_TF), as.numeric(min_precision))
 		
 	
 		return(as.data.frame(DEmat_COO))
 		} else {
-		DEmat = .Call("cpp_states_list_to_DEmat", as.list(R_areas_indices), as.list(R_states_list), as.matrix(dmat), as.numeric(elist), as.integer(R_normalize_TF))
+		DEmat = .Call("cpp_states_list_to_DEmat", as.list(R_areas_indices), as.list(R_states_list), as.matrix(dmat), as.numeric(elist), as.matrix(amat), as.integer(R_normalize_TF))
 		return(DEmat)
 		}
 
@@ -581,20 +637,54 @@ rcpp_mult2probvect <- function(a, b){
 #'
 Rcpp_combn_zerostart <- function(n_to_choose_from, k_to_choose, maxlim=1e+07)
 	{
+	defaults ='
+	n_to_choose_from = 5
+	k_to_choose = 6
+	maxlim=1e+07
+	'
+	
 	n = n_to_choose_from
 	m = k_to_choose
+	
+	# HEAD OFF MORE ERRORS
+	if (n < 1)
+		{
+		txt = cat("\nERROR: n_to_choose_from must be > 0.  Your value is ", n_to_choose_from, "\n", sep="")
+		cat(txt)
+		return(stop(txt))
+		}
+
+	if (m < 1)
+		{
+		txt = cat("\nERROR: k_to_choose must be > 0.  Your value is ", k_to_choose, "\n", sep="")
+		cat(txt)
+		return(stop(txt))
+		}
+
+	if (n < m)
+		{
+		txt = cat("\nERROR: k_to_choose must be less than or equal to n_to_choose_from.\n",
+		"Your values are:\n",
+		"n_to_choose_from =		", n_to_choose_from, "\n",
+		"k_to_choose =		", k_to_choose, "\n", sep="")
+		cat(txt)
+		return(stop(txt))
+		}
+
+
 	
 	# HEAD OFF ERROR
 	predicted_number_of_cells_to_fill = choose(n,m)
 	
-	if (predicted_number_of_cells_to_fill > maxlim)
+	if ((predicted_number_of_cells_to_fill > maxlim) || (predicted_number_of_cells_to_fill < 1))
 		{
-		txt = paste("ERROR: n=", n_to_choose_from, ", k=", k_to_choose, ", n choose k=", predicted_number_of_cells_to_fill, " > maxlim=", maxlim, "\nCalculating something this big may crash your computer!", sep="")
-		stop(txt)
+		txt = paste("ERROR: n=", n_to_choose_from, ", k=", k_to_choose, ", n choose k=", predicted_number_of_cells_to_fill, " > maxlim=", maxlim, "\nCalculating something this big may crash your computer!; (Note: (n choose k)<1 also raises this error.", sep="")
+		cat(txt)
+		return(stop(txt))
 		}
 	
 	
-	outarray = .Call("cpp_combn_zerostart", as.integer(n), as.integer(m), as.double(maxlim))
+	outarray = .Call("cpp_combn_zerostart", as.integer(n), as.integer(m), as.integer(maxlim))
 
 	#R_states_list <- matrix(out$res,nrow=m,byrow=F)
 
