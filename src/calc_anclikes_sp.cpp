@@ -502,7 +502,16 @@ R_normalize_TF) {
 				// Skip, if it's on the diagonal
 				if (i == j)
 					{
-					rowsum = rowsum;
+					//Causes a warning in R CMD check:
+					//"calc_anclikes_sp.cpp:505:13: warning: explicitly assigning a variable of type 'float' to itself [-Wself-assign]
+                    //                  rowsum = rowsum;
+                    //                    ~~~~~~ ^ ~~~~~~
+					//	1 warning generated.
+					//
+					// So, commenting this out:
+					//rowsum = rowsum;
+					float junkval = 1.0;
+					junkval = junkval + 1;
 					}
 				else
 					{

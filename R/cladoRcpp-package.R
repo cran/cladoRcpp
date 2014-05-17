@@ -3,8 +3,8 @@
 #' \tabular{ll}{
 #' Package: \tab cladoRcpp\cr
 #' Type: \tab Package\cr
-#' Version: \tab 0.14.2\cr
-#' Date: \tab 2013-07-13\cr
+#' Version: \tab 0.14.4\cr
+#' Date: \tab 2014-05-17\cr
 #' License: \tab GPL (>= 3)\cr
 #' LazyLoad: \tab yes\cr
 #' }
@@ -19,6 +19,13 @@
 #' combinations to investigate, and in biogeographical models, there can easily be hundreds of states, so 
 #' calculation time becomes an issue.  C++ implementation plus clever tricks (many combinations can be 
 #' eliminated a priori) can greatly speed the computation time over naive R implementations.
+#' 
+#' CITATION INFO: This package is the result of my Ph.D. research, please cite the package if you use it!  
+#' Type: \code{citation(package="cladoRcpp")} to get the citation information.
+#' 
+#' See also the citation information for the sister packages,
+#' \code{citation(package="rexpokit")} and \code{citation(package="BioGeoBEARS")}
+#' 
 #' 
 #' \bold{Further information:} In particular, in \code{cladoRcpp}, functions are implemented to calculate the probability, given a model, 
 #' of various scenarios for the inheritance of geographic range at speciation
@@ -41,7 +48,7 @@
 #' \bold{4.} founder-event speciation, where one descendant species inherits the ancestral range, and the other species has a range completely outside of the ancestral range
 #'
 #' \code{cladoRcpp} allows specification of these different models, including allowing different weights for the different processes, if users would like to infer the
-#' optimal model, rather than simply fixing it ahead of time.  The optimization and model choice is done with the help of the sister packages, \code{\link[rexpokit]{rexpokit}} and \code{BioGeoBEARS}.
+#' optimal model, rather than simply fixing it ahead of time.  The optimization and model choice is done with the help of the sister packages, \code{rexpokit} and \code{BioGeoBEARS}.
 #' 
 #' \emph{Note:} I began this package with a little bit of code from Rcpp and the various
 #' examples that have been written with it, as well as from the following:
@@ -70,8 +77,17 @@
 #'  @cite Ree_etal_2005
 #'  @cite ReeSmith2008
 #' @keywords package Rcpp phyloRcppExamples rcppbugs RcppArmadillo
-#' @seealso \code{\link{rcpp_calc_anclikes_sp}}, \code{\link{rcpp_areas_list_to_states_list}}, \link{Rcpp}, \link{RcppArmadillo}
+#' @seealso \code{\link{rcpp_calc_anclikes_sp}}, \code{\link{rcpp_areas_list_to_states_list}}, Rcpp, RcppArmadillo
 #' @examples
+#' 
+#' # To get citation information for cladoRcpp, type:
+#' citation(package="cladoRcpp")
+#' 
+#' # Please also cite the sister packages I created to utilize rexpokit:
+#' # citation(package="rexpokit")		# Roger Sidje is a coauthor 
+#'                                  	# of rexpokit and author of 
+#'                                  	# the FORTRAN EXPOKIT
+#' # citation(package="BioGeoBEARS")
 #' 
 #' library(cladoRcpp)
 #' # Test this first as it causes problems for --gct or --use-valgrind

@@ -13,7 +13,13 @@ extern "C" float minval(SEXP maxent01sub) ;
 extern "C" bool all_ints_equal(std::vector<int> myvector1, std::vector<int> myvector2) ;
 extern "C" bool any_ints_equal(std::vector<int> myvector1, std::vector<int> myvector2) ;
 extern "C" bool all_ints_found(std::vector<int> myvector1, std::vector<int> myvector2) ;
-extern "C" std::vector<int> merge_int_vectors(std::vector<int> myvector1, std::vector<int> myvector2) ;
+
+// This causes this CRAN check warning in CRAN:
+// 'merge_int_vectors' has C-linkage specified, but returns 
+// user-defined type 'std::vector<int>' which is incompatible with C
+//extern "C" std::vector<int> merge_int_vectors(std::vector<int> myvector1, std::vector<int> myvector2) ;
+std::vector<int> merge_int_vectors(std::vector<int> myvector1, std::vector<int> myvector2) ;
+
 
 extern "C" void moncombn(int* combmat, int* n, int* m);
 extern "C" void moncombn_zerostart(int* combmat, int* n, int* m);

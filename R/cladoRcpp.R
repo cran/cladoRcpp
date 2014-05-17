@@ -146,7 +146,7 @@ numstates_from_numareas <- function(numareas=3, maxareas=numareas, include_null_
 #' @return \code{states_list} A list of the states.
 #' @export
 #' @seealso \code{\link{numstates_from_numareas}}, \code{\link{rcpp_areas_list_to_states_list}}
-#' @note Go BEARS!
+#' @note No notes.
 #' @author Nicholas J. Matzke \email{matzke@@berkeley.edu} 
 #' @references
 #' \url{http://phylo.wikidot.com/matzke-2013-international-biogeography-society-poster}
@@ -379,7 +379,7 @@ rcpp_areas_list_to_states_list <- function(areas=c("A","B","C"), maxareas=length
 #'
 #' The size of the matrix will expand dramatically with the number of areas.  See \code{\link{numstates_from_numareas}} for the calculation.
 #' 
-#' Above 7 or so areas, making \code{Qmat} a COO-formatted matrix (COO=Coordinate list, see wikipedia, \url{http://en.wikipedia.org/wiki/Sparse_matrix#Coordinate_list_.28COO.29} ) which can then be used in \code{\link[rexpokit]{rexpokit}}'s sparse-matrix algorithms,
+#' Above 7 or so areas, making \code{Qmat} a COO-formatted matrix (COO=Coordinate list, see wikipedia, \url{http://en.wikipedia.org/wiki/Sparse_matrix#Coordinate_list_.28COO.29} ) which can then be used in \code{rexpokit}'s sparse-matrix algorithms,
 #' should be more efficient. (Sparse matrices are matrices made of mostly 0s.)
 #'
 #' @param areas_list a list of lists of areas (numbers, starting with 0)
@@ -1367,6 +1367,12 @@ rcpp_calc_anclikes_sp_COOprobs <- function(Rcpp_leftprobs, Rcpp_rightprobs, l, s
 #' Returns results as 4 columns: ancestral index, left index, right index, conditional
 #' probability given ancestral states (assuming likelihood of descendants is 1). Indexes
 #' are 0-based.
+#' 
+#' Keep in mind that cladogenesis matrices exclude the null state
+#' (a range of 0 areas), so if your states list starts with the 
+#' null range (as is typical/default in DEC-style models)
+#' then to get the R 1-based state indices requires e.g. 
+#' COO_weights_columnar[[1]] + 2.
 #'
 #' When the calculation is run at each node in the tree, all that is required is one
 #' pass through the COO-like array, with the downpassed probabilities of the
@@ -1409,7 +1415,14 @@ rcpp_calc_anclikes_sp_COOprobs <- function(Rcpp_leftprobs, Rcpp_rightprobs, l, s
 #' overrunning the line length...)
 #' @return \code{COO_weights_columnar} Transition weights matrix in COO-like format as 4 columns: 
 #' ancestral index, left index, right index, and weight of the specified transition. Indexes are
-#' 0-based. Dividing the
+#' 0-based. 
+#' Keep in mind that cladogenesis matrices exclude the null state
+#' (a range of 0 areas), so if your states list starts with the 
+#' null range (as is typical/default in DEC-style models)
+#' then to get the R 1-based state indices requires e.g. 
+#' COO_weights_columnar[[1]] + 2.
+#' 
+#' Dividing the
 #' weights by the sum of the weights for a particular ancestral state yields the conditional
 #' probabilities of each transition at the speciation event.
 #' (assuming likelihood of descendants is 1).
@@ -1619,6 +1632,11 @@ rcpp_calc_anclikes_sp_using_COOprobs <- function(Rcpp_leftprobs, Rcpp_rightprobs
 #' @param COO_weights_columnar Transition probability matrix in COO-like format as 4 columns: 
 #' ancestral index, left index, right index, conditional probability given ancestral states.
 #' (assuming likelihood of descendants is 1). Indexes are 0-based.
+#' Keep in mind that cladogenesis matrices exclude the null state
+#' (a range of 0 areas), so if your states list starts with the 
+#' null range (as is typical/default in DEC-style models)
+#' then to get the R 1-based state indices requires e.g. 
+#' COO_weights_columnar[[1]] + 2.
 #' @param numstates The user should provide the number of states (WITHOUT counting the null range),
 #' in case they are not all
 #' present in \code{COO_weights_columnar}.  If empty, the function assumes that the highest 
@@ -1683,6 +1701,11 @@ rcpp_calc_rowsums_for_COOweights_columnar <- function(COO_weights_columnar, nums
 #' @param COO_weights_columnar Transition probability matrix in COO-like format as 4 columns: 
 #' ancestral index, left index, right index, conditional probability given ancestral states.
 #' (assuming likelihood of descendants is 1). Indexes are 0-based.
+#' Keep in mind that cladogenesis matrices exclude the null state
+#' (a range of 0 areas), so if your states list starts with the 
+#' null range (as is typical/default in DEC-style models)
+#' then to get the R 1-based state indices requires e.g. 
+#' COO_weights_columnar[[1]] + 2.
 #' @param Rsp_rowsums A vector of size (numstates)  giving the sum of the relative probabilites of 
 #' each combination of descendant states, assuming the probabilities of the left- and right-states are 
 #' all equal (set to 1). This is thus the sum of the weights, and dividing by this normalization vector 

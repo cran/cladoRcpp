@@ -38,7 +38,7 @@
   display purposes.
 }
 \note{
-  Go BEARS!
+  No notes.
 }
 \examples{
 areas = c("A","B","C")

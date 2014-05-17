@@ -85,11 +85,17 @@
   \code{COO_weights_columnar} Transition weights matrix in
   COO-like format as 4 columns: ancestral index, left
   index, right index, and weight of the specified
-  transition. Indexes are 0-based. Dividing the weights by
-  the sum of the weights for a particular ancestral state
-  yields the conditional probabilities of each transition
-  at the speciation event. (assuming likelihood of
-  descendants is 1).
+  transition. Indexes are 0-based. Keep in mind that
+  cladogenesis matrices exclude the null state (a range of
+  0 areas), so if your states list starts with the null
+  range (as is typical/default in DEC-style models) then to
+  get the R 1-based state indices requires e.g.
+  COO_weights_columnar[[1]] + 2.
+
+  Dividing the weights by the sum of the weights for a
+  particular ancestral state yields the conditional
+  probabilities of each transition at the speciation event.
+  (assuming likelihood of descendants is 1).
 }
 \description{
   This function improves on
@@ -109,6 +115,12 @@
   index, right index, conditional probability given
   ancestral states (assuming likelihood of descendants is
   1). Indexes are 0-based.
+
+  Keep in mind that cladogenesis matrices exclude the null
+  state (a range of 0 areas), so if your states list starts
+  with the null range (as is typical/default in DEC-style
+  models) then to get the R 1-based state indices requires
+  e.g. COO_weights_columnar[[1]] + 2.
 
   When the calculation is run at each node in the tree, all
   that is required is one pass through the COO-like array,

@@ -1,2 +1,3 @@
 useDynLib(cladoRcpp)
 exportPattern("^[[:alpha:]]+")
+importFrom(Rcpp, evalCpp)

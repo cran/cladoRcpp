@@ -17,7 +17,12 @@
   in COO-like format as 4 columns: ancestral index, left
   index, right index, conditional probability given
   ancestral states. (assuming likelihood of descendants is
-  1). Indexes are 0-based.}
+  1). Indexes are 0-based. Keep in mind that cladogenesis
+  matrices exclude the null state (a range of 0 areas), so
+  if your states list starts with the null range (as is
+  typical/default in DEC-style models) then to get the R
+  1-based state indices requires e.g.
+  COO_weights_columnar[[1]] + 2.}
 
   \item{Rsp_rowsums}{A vector of size (numstates) giving
   the sum of the relative probabilites of each combination

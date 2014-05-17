@@ -52,10 +52,9 @@
   Above 7 or so areas, making \code{Qmat} a COO-formatted
   matrix (COO=Coordinate list, see wikipedia,
   \url{http://en.wikipedia.org/wiki/Sparse_matrix#Coordinate_list_.28COO.29}
-  ) which can then be used in
-  \code{\link[rexpokit]{rexpokit}}'s sparse-matrix
-  algorithms, should be more efficient. (Sparse matrices
-  are matrices made of mostly 0s.)
+  ) which can then be used in \code{rexpokit}'s
+  sparse-matrix algorithms, should be more efficient.
+  (Sparse matrices are matrices made of mostly 0s.)
 }
 \examples{
 # Specify the areas
