@@ -1,3 +1,26 @@
+CHANGES in cladoRcpp VERSION 0.15 -- 2018-10-03
+
+NEW FEATURES
+
+    o added modifications for trait-dependent dispersal model variants (basically, 
+      the cladogenetic transition matrix can be doubled-up, e.g. if a 2-state
+      trait is influencing dispersal. Dispersal multipliers (m1, m2, etc.) are 
+      multiplied by the base j value. This takes place as a last step (after
+      j has been used to modify the per-event cladogenetic weights for y, s, and
+      v (narrow sympatry, subset sympatry, and vicariance per-event weights). 
+
+BUG FIXES
+
+    o none
+
+OTHER CHANGES
+
+    o Code hosted on GitHub as well. (https://github.com/nmatzke/cladoRcpp )
+    o Changed Maintainer email to nickmatzke.ncse@gmail.com (more permanent)
+
+
+
+
 CHANGES in cladoRcpp VERSION 0.14.4 -- 2014-05-17
 
 NEW FEATURES

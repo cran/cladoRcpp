@@ -455,3 +455,4 @@ SEXP convolve3cpp(SEXP a, SEXP b) {
 			xab[i + j] += xa[i] * xb[j];
 	return xab;
 	}
+

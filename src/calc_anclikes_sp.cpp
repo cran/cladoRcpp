@@ -1,4 +1,9 @@
-#include <RcppArmadillo.h>
+#include <R.h>
+//#include <Rinternals.h>
+//#include <RcppArmadillo.h>
+#include <R_ext/Rdynload.h>
+#include <R_ext/RS.h>
+#include <stdlib.h> // for NULL
 
 //#include <Rcpp.h> //fixing: In file included from calc_anclikes_sp.cpp:2:
 // /Library/Frameworks/R.framework/Versions/2.15/Resources/library/RcppArmadillo/include/RcppArmadillo.h:26:6: 
@@ -27,7 +32,9 @@ using namespace std;
 
 
 
-RcppExport SEXP cpp_combn_zerostart(SEXP R_n, SEXP R_m, SEXP R_maxval)
+extern "C" 
+{
+SEXP cpp_combn_zerostart(SEXP R_n, SEXP R_m, SEXP R_maxval)
 	{
 	using namespace std;
 	
@@ -139,12 +146,15 @@ RcppExport SEXP cpp_combn_zerostart(SEXP R_n, SEXP R_m, SEXP R_maxval)
 	//return Rcpp::wrap(combmat_vals);
 	return combmat_vals;
 	}
-
+} // end extern "C"
 
 	
 // areas_list here, is just a vector of indices (0, 1, 2, etc...)
 // areas_list here, is just a vector of indices (0, 1, 2, etc...)
-RcppExport SEXP cpp_areas_list_to_states_list(SEXP R_areas_indices, SEXP R_maxareas, SEXP R_include_null_range)
+extern "C" 
+{
+
+SEXP cpp_areas_list_to_states_list(SEXP R_areas_indices, SEXP R_maxareas, SEXP R_include_null_range)
 	{
 	using namespace std;
 
@@ -247,6 +257,7 @@ RcppExport SEXP cpp_areas_list_to_states_list(SEXP R_areas_indices, SEXP R_maxar
 	// just use it...
 	return states_list;
 	}
+} // end extern "C"
 
 
 
@@ -258,7 +269,9 @@ RcppExport SEXP cpp_areas_list_to_states_list(SEXP R_areas_indices, SEXP R_maxar
 /* Rcpp function: take a geographic states list, dmat, and elist, and produce a (dense) dispersal */
 /* probability matrix. */
 /* (Later step: normalize it.) */
-RcppExport SEXP cpp_states_list_to_DEmat(SEXP R_areas_indices, SEXP R_states_indices, SEXP R_dmat, SEXP R_elist, SEXP R_amat, SEXP
+extern "C" 
+{
+SEXP cpp_states_list_to_DEmat(SEXP R_areas_indices, SEXP R_states_indices, SEXP R_dmat, SEXP R_elist, SEXP R_amat, SEXP
 R_normalize_TF) {
 
 	using namespace std;
@@ -571,6 +584,7 @@ R_normalize_TF) {
 	
 	return DEmat;
 	}
+} // end extern "C"
 
 
 
@@ -582,7 +596,9 @@ R_normalize_TF) {
 /* Rcpp function: take a geographic states list, dmat, and elist, and produce a (COO) dispersal */
 /* probability matrix. */
 /* (Later step: normalize it.) */
-RcppExport SEXP cpp_states_list_to_DEmat_COO(SEXP R_areas_indices, SEXP R_states_indices, SEXP R_dmat, SEXP R_elist, SEXP R_amat, 
+extern "C" 
+{
+SEXP cpp_states_list_to_DEmat_COO(SEXP R_areas_indices, SEXP R_states_indices, SEXP R_dmat, SEXP R_elist, SEXP R_amat, 
 SEXP R_normalize_TF, SEXP R_min_precision) {
 
 	using namespace std;
@@ -966,6 +982,7 @@ SEXP R_normalize_TF, SEXP R_min_precision) {
 	
 	return DEmat_COO;
 	}
+} // end extern "C"
 
 
 
@@ -973,7 +990,9 @@ SEXP R_normalize_TF, SEXP R_min_precision) {
 
 
 /* combine leftprobs and rightprobs through speciation model */
-RcppExport SEXP cpp_calc_anclikes_sp(SEXP Rprintmat, SEXP leftprobs, SEXP rightprobs, SEXP states_indices, SEXP s,
+extern "C" 
+{
+SEXP cpp_calc_anclikes_sp(SEXP Rprintmat, SEXP leftprobs, SEXP rightprobs, SEXP states_indices, SEXP s,
 SEXP v, SEXP j, SEXP y, SEXP dmat, SEXP maxent01s, SEXP maxent01v, SEXP maxent01j, SEXP maxent01y, SEXP
 max_minsize_as_function_of_ancsize, SEXP Rsp_rowsums) {
 
@@ -1312,6 +1331,7 @@ ancestral_areas)==true)  )
 	//return Rcpp::wrap(*it);
 	//return Rcpp::wrap(testval);
 	}
+} // end extern "C"
 
 
 
@@ -1322,7 +1342,9 @@ ancestral_areas)==true)  )
 /* combine leftprobs and rightprobs through speciation model */
 /* (sadly, we have to go through the sp matrix once just to get sums; still, we don't want to 
 store the whole n*n^2 thing...) */
-RcppExport SEXP cpp_calc_anclikes_sp_rowsums(SEXP Rprintmat, SEXP leftprobs, SEXP rightprobs, SEXP states_indices,
+extern "C" 
+{
+SEXP cpp_calc_anclikes_sp_rowsums(SEXP Rprintmat, SEXP leftprobs, SEXP rightprobs, SEXP states_indices,
 SEXP s, SEXP v, SEXP j, SEXP y, SEXP dmat, SEXP maxent01s, SEXP maxent01v, SEXP maxent01j, SEXP maxent01y, SEXP
 max_minsize_as_function_of_ancsize) {
 
@@ -1724,6 +1746,7 @@ ancestral_areas)==true)  )
 	//return Rcpp::wrap(testval);
 	}
 
+} // end extern "C"
 
 
 
@@ -1751,7 +1774,9 @@ ancestral_areas)==true)  )
 /* */
 /* */
 /* */
-RcppExport SEXP cpp_calc_anclikes_sp_COOprobs(SEXP Rprintmat, SEXP leftprobs, SEXP rightprobs, SEXP states_indices,
+extern "C" 
+{
+SEXP cpp_calc_anclikes_sp_COOprobs(SEXP Rprintmat, SEXP leftprobs, SEXP rightprobs, SEXP states_indices,
 SEXP s, SEXP v, SEXP j, SEXP y, SEXP dmat, SEXP maxent01s, SEXP maxent01v, SEXP maxent01j, SEXP maxent01y, SEXP
 max_minsize_as_function_of_ancsize) {
 
@@ -2239,6 +2264,7 @@ ancestral_areas)==true)  )
 	//return Rcpp::wrap(testval);
 	}
 
+} // end extern "C"
 
 
 
@@ -2300,7 +2326,9 @@ Vicariance speciation:
 /* */
 /* */
 /* */
-RcppExport SEXP cpp_calc_anclikes_sp_COOweights_faster(SEXP Rprintmat, SEXP leftprobs, SEXP rightprobs, SEXP
+extern "C" 
+{
+SEXP cpp_calc_anclikes_sp_COOweights_faster(SEXP Rprintmat, SEXP leftprobs, SEXP rightprobs, SEXP
 states_indices, SEXP s, SEXP v, SEXP j, SEXP y, SEXP dmat, SEXP maxent01s, SEXP maxent01v, SEXP maxent01j, SEXP
 maxent01y, SEXP max_minsize_as_function_of_ancsize) {
 
@@ -3076,6 +3104,7 @@ jprob_for_cell_based_on_distances;
 	//return Rcpp::wrap(*it);
 	//return Rcpp::wrap(testval);
 	}
+} // end extern "C"
 
 
 
@@ -3088,7 +3117,9 @@ jprob_for_cell_based_on_distances;
 // COO_weights_columnar[[4]] = probability of this split
 //
 // Return rowsums
-RcppExport SEXP cpp_calc_rowsums_for_COOweights_columnar(SEXP RCOO_weights_columnar_anc_i_list, SEXP RCOO_probs_list, SEXP Rnumstates)
+extern "C" 
+{
+SEXP cpp_calc_rowsums_for_COOweights_columnar(SEXP RCOO_weights_columnar_anc_i_list, SEXP RCOO_probs_list, SEXP Rnumstates)
 	{
 	
 	// Cast for Rcpp
@@ -3112,6 +3143,7 @@ RcppExport SEXP cpp_calc_rowsums_for_COOweights_columnar(SEXP RCOO_weights_colum
 	
 	return(rowsums);
 	}
+} // end extern "C"
 
 
 
@@ -3124,7 +3156,9 @@ RcppExport SEXP cpp_calc_rowsums_for_COOweights_columnar(SEXP RCOO_weights_colum
 // COO_weights_columnar[[4]] = probability of this split
 //
 // Combine with rowsums and left/right indices to produce actual split likelihoods
-RcppExport SEXP cpp_calc_splitlikes_using_COOweights_columnar(SEXP leftprobs, SEXP rightprobs, SEXP RCOO_weights_columnar_anc_i_list, SEXP RCOO_left_i_list, SEXP RCOO_right_j_list, SEXP RCOO_probs_list, SEXP Rsp_rowsums)
+extern "C" 
+{
+SEXP cpp_calc_splitlikes_using_COOweights_columnar(SEXP leftprobs, SEXP rightprobs, SEXP RCOO_weights_columnar_anc_i_list, SEXP RCOO_left_i_list, SEXP RCOO_right_j_list, SEXP RCOO_probs_list, SEXP Rsp_rowsums)
 	{
 	
 	/* Define the numeric vectors and put in the data into C++ from R */
@@ -3165,9 +3199,76 @@ RcppExport SEXP cpp_calc_splitlikes_using_COOweights_columnar(SEXP leftprobs, SE
 		split_likes[j] = tmp_probval;
 		}
 	
+	/* 
+	
+	# Behavior of:
+	# rcpp_calc_splitlikes_using_COOweights_columnar
+
+	tmpca_2 = c(1, 5e-25, 1e-12)
+	tmpcb_2 = c(5e-25, 1, 1e-12)
+
+	COO_weights_columnar = list(c(0L, 1L, 2L, 2L, 2L, 2L, 2L, 2L, 0L, 1L, 0L, 1L), c(0L, 
+	1L, 2L, 2L, 0L, 1L, 1L, 0L, 0L, 1L, 1L, 0L), c(0L, 1L, 0L, 1L, 
+	2L, 2L, 0L, 1L, 1L, 0L, 0L, 1L), c(3.33333332491748e-06, 3.33333332491748e-06, 
+	3.33333332491748e-06, 3.33333332491748e-06, 3.33333332491748e-06, 
+	3.33333332491748e-06, 3.33333332491748e-06, 3.33333332491748e-06, 
+	2.99998998641968, 2.99998998641968, 2.99998998641968, 2.99998998641968
+	))
+
+	printmat = FALSE
+
+	Rsp_rowsums = c(5.999983, 5.999983, 0.000020)
+	#Rsp_rowsums = c(6, 6, 6)
+
+	Rcpp_leftprobs = tmpca_2
+	Rcpp_rightprobs = tmpcb_2
+
+
+	# Print the matrix output to screen?	
+	if (printmat == TRUE)
+	{
+	Rprintmat = 1
+	} else {
+	Rprintmat = 0
+	}
+
+	RCOO_weights_columnar_anc_i_list = COO_weights_columnar[[1]]
+	RCOO_left_i_list = COO_weights_columnar[[2]]
+	RCOO_right_j_list = COO_weights_columnar[[3]]
+	RCOO_probs_list = COO_weights_columnar[[4]]
+
+	# Call the fast C++ function
+	splitlikes = .Call( "cpp_calc_splitlikes_using_COOweights_columnar", leftprobs=as.numeric(Rcpp_leftprobs), rightprobs=as.numeric(Rcpp_rightprobs), RCOO_weights_columnar_anc_i_list=as.integer(RCOO_weights_columnar_anc_i_list), RCOO_left_i_list=as.integer(RCOO_left_i_list), RCOO_right_j_list=as.integer(RCOO_right_j_list), RCOO_probs_list=as.numeric(RCOO_probs_list), Rsp_rowsums=as.numeric(Rsp_rowsums), PACKAGE = "cladoRcpp" )
+	splitlikes
+
+
+	# R version of the above calculations:
+	# 
+	num_splits_scenarios = length(COO_weights_columnar[[1]])
+	num_ancestral_ranges = length(Rsp_rowsums)
+	tmp_split_likes = rep(0, times=num_ancestral_ranges)
+	cat("\n")
+	for (i in 1:num_splits_scenarios)
+	{
+	tmp_probval = Rcpp_leftprobs[1+COO_weights_columnar[[2]][i]] * Rcpp_rightprobs[1+COO_weights_columnar[[3]][i]] * COO_weights_columnar[[4]][i]
+	tmp_probval
+	cat(tmp_probval,"\n")
+	tmp_split_likes[1+COO_weights_columnar[[1]][i]] = tmp_split_likes[1+COO_weights_columnar[[1]][i]] + tmp_probval
+	}
+
+	split_likes = tmp_split_likes / Rsp_rowsums
+	split_likes
+
+
+	cbind(COO_weights_columnar[[1]], COO_weights_columnar[[2]], COO_weights_columnar[[3]], COO_weights_columnar[[4]])
+	Rsp_rowsums
+
+	
+	*/ 	
 	
 	return(split_likes);
 	}
+} // end extern "C"
 
 
 
@@ -3175,7 +3276,9 @@ RcppExport SEXP cpp_calc_splitlikes_using_COOweights_columnar(SEXP leftprobs, SE
 
 
 // Taking the COO_probs_list as an input, and the leftprobs and rightprobs, combine them to produce ancprobs
-RcppExport SEXP cpp_calc_anclikes_sp_using_COOprobs(SEXP Rprintmat, SEXP leftprobs, SEXP rightprobs, SEXP
+extern "C" 
+{
+SEXP cpp_calc_anclikes_sp_using_COOprobs(SEXP Rprintmat, SEXP leftprobs, SEXP rightprobs, SEXP
 RCOO_left_i_list, SEXP RCOO_right_j_list, SEXP RCOO_probs_list, SEXP Rsp_rowsums)
 	{
 	using namespace std;
@@ -3228,6 +3331,7 @@ sp_rowsums[m];
 	
 	return(anc_relprobs);
 	}
+} // end extern "C"
 
 
 

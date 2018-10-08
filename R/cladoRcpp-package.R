@@ -3,8 +3,8 @@
 #' \tabular{ll}{
 #' Package: \tab cladoRcpp\cr
 #' Type: \tab Package\cr
-#' Version: \tab 0.14.4\cr
-#' Date: \tab 2014-05-17\cr
+#' Version: \tab 0.15\cr
+#' Date: \tab 2018-10-03\cr
 #' License: \tab GPL (>= 3)\cr
 #' LazyLoad: \tab yes\cr
 #' }
@@ -72,7 +72,7 @@
 #' @author Nicholas J. Matzke \email{matzke@@berkeley.edu} 
 #' @references
 #' \url{http://phylo.wikidot.com/biogeobears}
-#' @bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
+#' #bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
 #'  @cite Matzke_2012_IBS
 #'  @cite Ree_etal_2005
 #'  @cite ReeSmith2008
@@ -818,4 +818,4 @@
 #' Rsp_rowsums, printmat=TRUE)
 #' corrected_condlikes_list
 #' 
- 
+##require("roxygen2")

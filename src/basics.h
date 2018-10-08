@@ -49,5 +49,4 @@ extern "C" void printBoolVec (std::vector<bool> myvector1);
 RcppExport SEXP mult2probvect(SEXP leftprobs, SEXP rightprobs) ;
 RcppExport SEXP convolve3cpp(SEXP a, SEXP b) ;
 
-
 #endif

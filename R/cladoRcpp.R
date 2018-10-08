@@ -1,5 +1,5 @@
-#' @include fermat.R
- 
+####(apostrophe) ATinclude fermat_R
+##require("roxygen2")
 #roxygenize()
 
 
@@ -74,8 +74,9 @@ strsplit3 <- function(x, ...)
 #' @return \code{nstates} Number of states
 #' @export
 #' @seealso \code{\link[stats]{convolve}}
-#' @bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
-#'   @cite Matzke_2012_IBS
+#' #bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
+#'   @cite Matzke_2013
+#'   @cite Matzke_2014
 #'	 @cite ReeSmith2008
 #' @author Nicholas Matzke \email{matzke@@berkeley.edu}
 #' @examples
@@ -151,8 +152,9 @@ numstates_from_numareas <- function(numareas=3, maxareas=numareas, include_null_
 #' @references
 #' \url{http://phylo.wikidot.com/matzke-2013-international-biogeography-society-poster}
 #' \url{https://code.google.com/p/lagrange/}
-#' @bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
-#'   @cite Matzke_2012_IBS
+#' #bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
+#'   @cite Matzke_2013
+#'   @cite Matzke_2014
 #'	 @cite ReeSmith2008
 #' @examples
 #' areas = c("A","B","C")
@@ -290,8 +292,9 @@ areas_list_to_states_list_old <- function(areas=c("A","B","C"), maxareas=length(
 #' @return \code{R_states_list} A list of the states, where each state is a list of areas in the form of 0-based indices
 #' @export
 #' @seealso \code{\link{numstates_from_numareas}}, \code{\link{areas_list_to_states_list_old}}
-#' @bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
-#'   @cite Matzke_2012_IBS
+#' #bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
+#'   @cite Matzke_2013
+#'   @cite Matzke_2014
 #'	 @cite ReeSmith2008
 #' @author Nicholas Matzke \email{matzke@@berkeley.edu}
 #' @examples
@@ -326,6 +329,13 @@ areas_list_to_states_list_old <- function(areas=c("A","B","C"), maxareas=length(
 #' 
 rcpp_areas_list_to_states_list <- function(areas=c("A","B","C"), maxareas=length(areas), include_null_range=TRUE)
 	{
+	setup = '
+	areas=c("A","B","C")
+	rcpp_areas_list_to_states_list(areas=c("A","B","C"), maxareas=length(areas), include_null_range=TRUE)
+	
+	'
+	
+	
 	# Error trap
 	if (maxareas > length(areas))
 		{
@@ -353,7 +363,7 @@ rcpp_areas_list_to_states_list <- function(areas=c("A","B","C"), maxareas=length
 # 	
 
 	
-	R_states_list = .Call("cpp_areas_list_to_states_list", as.integer(R_areas_indices), as.integer(R_maxareas), as.logical(R_include_null_range))
+	R_states_list = .Call("cpp_areas_list_to_states_list", as.integer(R_areas_indices), as.integer(R_maxareas), as.logical(R_include_null_range), PACKAGE="cladoRcpp")
 	
 	if (include_null_range == TRUE)
 		{
@@ -396,8 +406,9 @@ rcpp_areas_list_to_states_list <- function(areas=c("A","B","C"), maxareas=length
 #' @seealso \code{\link{numstates_from_numareas}}, \code{\link[stats]{convolve}}
 #' @references
 #'   \url{http://en.wikipedia.org/wiki/Sparse_matrix#Coordinate_list_.28COO.29}
-#' @bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
-#'   @cite Matzke_2012_IBS
+#' #bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
+#'   @cite Matzke_2013
+#'   @cite Matzke_2014
 #'	 @cite ReeSmith2008
 #' @author Nicholas Matzke \email{matzke@@berkeley.edu}
 #' @examples
@@ -516,12 +527,12 @@ rcpp_states_list_to_DEmat <- function(areas_list, states_list, dmat, elist, amat
 	# Convert TF to 1/0
 	if (makeCOO_TF == TRUE)
 		{
-		DEmat_COO = .Call("cpp_states_list_to_DEmat_COO", as.list(R_areas_indices), as.list(R_states_list), as.matrix(dmat), as.numeric(elist), as.matrix(amat), as.integer(R_normalize_TF), as.numeric(min_precision))
+		DEmat_COO = .Call("cpp_states_list_to_DEmat_COO", as.list(R_areas_indices), as.list(R_states_list), as.matrix(dmat), as.numeric(elist), as.matrix(amat), as.integer(R_normalize_TF), as.numeric(min_precision), PACKAGE="cladoRcpp")
 		
 	
 		return(as.data.frame(DEmat_COO))
 		} else {
-		DEmat = .Call("cpp_states_list_to_DEmat", as.list(R_areas_indices), as.list(R_states_list), as.matrix(dmat), as.numeric(elist), as.matrix(amat), as.integer(R_normalize_TF))
+		DEmat = .Call("cpp_states_list_to_DEmat", as.list(R_areas_indices), as.list(R_states_list), as.matrix(dmat), as.numeric(elist), as.matrix(amat), as.integer(R_normalize_TF), PACKAGE="cladoRcpp")
 		return(DEmat)
 		}
 
@@ -551,7 +562,7 @@ rcpp_states_list_to_DEmat <- function(areas_list, states_list, dmat, elist, amat
 #' @return \code{convolve_result_vector} the vector which is the product of the convolution
 #' @export
 #' @seealso \code{\link[Rcpp]{Rcpp}}, \code{\link{convolve}}, \code{\link{rcpp_mult2probvect}}, \code{\link{Rcpp_combn_zerostart}}
-#' @bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
+#' #bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
 #'   @cite Eddelbuettel_Francois_2011
 #' @author C++ code by: Dirk Eddelbuettel <edd at debian.org> & Romain Francois (2011); This R wrapper & documentation: Nicholas Matzke \email{matzke@@berkeley.edu}
 #' @examples
@@ -628,8 +639,9 @@ rcpp_mult2probvect <- function(a, b){
 #' number of combinations.
 #' @export
 #' @seealso \code{\link{rcpp_calc_anclikes_sp}}, \code{\link{rcpp_mult2probvect}}, \code{\link{rcpp_convolve}}
-#' @bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
-#'   @cite Matzke_2012_IBS
+#' #bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
+#'   @cite Matzke_2013
+#'   @cite Matzke_2014
 #' @author Nicholas Matzke \email{matzke@@berkeley.edu}
 #' @examples
 #' Rcpp_combn_zerostart(n_to_choose_from=4, k_to_choose=2, maxlim=1e+07)
@@ -684,7 +696,7 @@ Rcpp_combn_zerostart <- function(n_to_choose_from, k_to_choose, maxlim=1e+07)
 		}
 	
 	
-	outarray = .Call("cpp_combn_zerostart", as.integer(n), as.integer(m), as.integer(maxlim))
+	outarray = .Call("cpp_combn_zerostart", as.integer(n), as.integer(m), as.integer(maxlim), PACKAGE="cladoRcpp")
 
 	#R_states_list <- matrix(out$res,nrow=m,byrow=F)
 
@@ -751,8 +763,9 @@ Rcpp_combn_zerostart <- function(n_to_choose_from, k_to_choose, maxlim=1e+07)
 #' @return \code{prob_ancestral_states} The probabilities of the ancestral states.
 #' @export
 #' @seealso \code{\link{rcpp_calc_anclikes_sp}}
-#' @bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
-#'   @cite Matzke_2012_IBS
+#' #bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
+#'   @cite Matzke_2013
+#'   @cite Matzke_2014
 #'	 @cite ReeSmith2008
 #' @author Nicholas Matzke \email{matzke@@berkeley.edu}
 #' @examples
@@ -973,8 +986,9 @@ rcpp_calc_anclikes_sp_prebyte <- function(Rcpp_leftprobs, Rcpp_rightprobs, l, s=
 #' @export
 #' @seealso \code{\link{rcpp_calc_anclikes_sp}}, \code{\link{rcpp_calc_anclikes_sp_COOprobs}}, 
 #' \code{\link{rcpp_calc_anclikes_sp_COOweights_faster}}
-#' @bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
-#'   @cite Matzke_2012_IBS
+#' #bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
+#'   @cite Matzke_2013
+#'   @cite Matzke_2014
 #'	 @cite ReeSmith2008
 #' @author Nicholas Matzke \email{matzke@@berkeley.edu}
 #' @examples
@@ -1051,8 +1065,9 @@ rcpp_calc_anclikes_sp = compiler::cmpfun(rcpp_calc_anclikes_sp_prebyte)
 #' @export
 #' @seealso \code{\link{rcpp_calc_anclikes_sp}}, \code{\link{rcpp_calc_anclikes_sp_COOprobs}}, 
 #' \code{\link{rcpp_calc_anclikes_sp_COOweights_faster}}
-#' @bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
-#'   @cite Matzke_2012_IBS
+#' #bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
+#'   @cite Matzke_2013
+#'   @cite Matzke_2014
 #'   @cite ReeSmith2008
 #' @author Nicholas Matzke \email{matzke@@berkeley.edu}
 #' @examples
@@ -1238,8 +1253,9 @@ rcpp_calc_anclikes_sp_rowsums <- function(Rcpp_leftprobs, Rcpp_rightprobs, l, s=
 #' @export
 #' @seealso \code{\link{rcpp_calc_anclikes_sp}}, \code{\link{rcpp_calc_anclikes_sp_COOprobs}}, 
 #' \code{\link{rcpp_calc_anclikes_sp_COOweights_faster}}
-#' @bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
-#'   @cite Matzke_2012_IBS
+#' #bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
+#'   @cite Matzke_2013
+#'   @cite Matzke_2014
 #'	 @cite ReeSmith2008
 #' @author Nicholas Matzke \email{matzke@@berkeley.edu}
 #' @examples
@@ -1413,6 +1429,18 @@ rcpp_calc_anclikes_sp_COOprobs <- function(Rcpp_leftprobs, Rcpp_rightprobs, l, s
 #' @param printmat Should the probability matrix output be printed to screen? (useful for debugging, but 
 #' can be dramatically slow in R.app for some reason for even moderate numbers of states; perhaps 
 #' overrunning the line length...)
+#' @param m This is a vector of rate/weight multipliers for dispersal, conditional on the values of some
+#' (non-biogeographical) trait. For example, one might hypothesize that flight/flightlessness effects
+#' dispersal probability, and manually put a multiplier of 0.001 on the flightlessness state. Or, 
+#' one might attempt to estimate this. The strategy used in cladoRcpp is to expand the default cladogenetic
+#' rate matrix by length(m) times. I.e., if \emph{m} is not \code{NULL}, then loop through the values of \emph{m} and apply the 
+#' multipliers to \emph{d} (and \emph{j}, and \emph{a}) events. Default is \code{NULL}.
+#' @param m_null_range Is the null range included in the state space in the general 
+#' analysis? (The function needs to know this, when there are traits, to index
+#' the state space correctly.)
+#' @param jts_matrix A numtraits x numtraits matrix containing the proportions for 
+#' trait transitions during j events. E.g., for a sudden switch from 
+#' trait 1 (flight) to trait 2 (flightlessness) during a jump event.
 #' @return \code{COO_weights_columnar} Transition weights matrix in COO-like format as 4 columns: 
 #' ancestral index, left index, right index, and weight of the specified transition. Indexes are
 #' 0-based. 
@@ -1430,8 +1458,9 @@ rcpp_calc_anclikes_sp_COOprobs <- function(Rcpp_leftprobs, Rcpp_rightprobs, l, s
 #' @seealso \code{\link{rcpp_calc_anclikes_sp}}, \code{\link{rcpp_calc_anclikes_sp_COOprobs}}, 
 #' \code{\link{rcpp_calc_anclikes_sp_COOweights_faster}}
 #' @seealso \code{\link{rcpp_calc_anclikes_sp}}
-#' @bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
-#'   @cite Matzke_2012_IBS
+#' #bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
+#'   @cite Matzke_2013
+#'   @cite Matzke_2014
 #'   @cite ReeSmith2008
 #' @author Nicholas Matzke \email{matzke@@berkeley.edu}
 #' @examples
@@ -1441,8 +1470,10 @@ rcpp_calc_anclikes_sp_COOprobs <- function(Rcpp_leftprobs, Rcpp_rightprobs, l, s
 #' # For examples of running the functions, see the comparison of all functions at:
 #' # ?cladoRcpp
 #'
-rcpp_calc_anclikes_sp_COOweights_faster <- function(Rcpp_leftprobs, Rcpp_rightprobs, l, s=1, v=1, j=0, y=1, dmat=NULL, maxent01s=NULL, maxent01v=NULL, maxent01j=NULL, maxent01y=NULL, max_minsize_as_function_of_ancsize=NULL, printmat=TRUE)
+rcpp_calc_anclikes_sp_COOweights_faster <- function(Rcpp_leftprobs, Rcpp_rightprobs, l, s=1, v=1, j=0, y=1, dmat=NULL, maxent01s=NULL, maxent01v=NULL, maxent01j=NULL, maxent01y=NULL, max_minsize_as_function_of_ancsize=NULL, printmat=TRUE, m=NULL, m_null_range=TRUE, jts_matrix=NULL)
 	{
+	
+	#print("rcpp_calc_anclikes_sp_COOweights_faster")
 	#print(Rcpp_leftprobs)
 	#print(Rcpp_rightprobs)
 	
@@ -1526,15 +1557,293 @@ rcpp_calc_anclikes_sp_COOweights_faster <- function(Rcpp_leftprobs, Rcpp_rightpr
 		Rprintmat = 0
 		}
 
-	
-	# Call the fast C++ function
-	COO_weights_columnar = .Call( "cpp_calc_anclikes_sp_COOweights_faster", Rprintmat=as.integer(Rprintmat), cpp_leftprobs=as.numeric(tmpa), cpp_leftprobs=as.numeric(tmpb), l=l, s=as.numeric(s), v=as.numeric(v), j=as.numeric(j), y=as.numeric(y), dmat=as.matrix(dmat), maxent01s=as.matrix(maxent01s), maxent01v=as.matrix(maxent01v), maxent01j=as.matrix(maxent01j), maxent01y=as.matrix(maxent01y), max_minsize_as_function_of_ancsize=as.integer(max_minsize_as_function_of_ancsize), PACKAGE = "cladoRcpp" )
+	# If m is NULL (default)
+	if (is.null(m) == TRUE)
+		{
+		# Call the fast C++ function
+		COO_weights_columnar = .Call( "cpp_calc_anclikes_sp_COOweights_faster", Rprintmat=as.integer(Rprintmat), cpp_leftprobs=as.numeric(tmpa), cpp_leftprobs=as.numeric(tmpb), l=l, s=as.numeric(s), v=as.numeric(v), j=as.numeric(j), y=as.numeric(y), dmat=as.matrix(dmat), maxent01s=as.matrix(maxent01s), maxent01v=as.matrix(maxent01v), maxent01j=as.matrix(maxent01j), maxent01y=as.matrix(maxent01y), max_minsize_as_function_of_ancsize=as.integer(max_minsize_as_function_of_ancsize), PACKAGE = "cladoRcpp" )
 
-	#print(Rcpp_leftprobs)
-	#print(Rcpp_rightprobs)
+		#print(Rcpp_leftprobs)
+		#print(Rcpp_rightprobs)
 	
-	return(COO_weights_columnar)
-	}
+		return(COO_weights_columnar)
+		} # END if (is.null(m) == TRUE)
+	
+	
+	# If m is not NULL, loop through the multipliers based on the possible traits
+	# Calculate the cladogenesis rate matrix (COO-like format) for each one
+	# Then stick them together
+	if (is.null(m) == FALSE)
+		{
+		# Initialize
+		COO_weights_columnar_1 = NULL
+		COO_weights_columnar_2 = NULL
+		COO_weights_columnar_3 = NULL
+		COO_weights_columnar_4 = NULL
+		
+		# Number of states in the (default, no trait) state space
+		if (m_null_range == TRUE)
+			{
+			numstates_ranges_times_ms = length(Rcpp_leftprobs) + 1
+			numstates_ranges = numstates_ranges_times_ms / length(m)
+			numstates_ranges_in_default_COOmat = numstates_ranges - 1
+			} else {
+			numstates_ranges_times_ms = length(Rcpp_leftprobs) + 0
+			numstates_ranges = numstates_ranges_times_ms / length(m)			
+			numstates_ranges_in_default_COOmat = numstates_ranges - 0
+			}
+		
+		# We don't have to change d or a, as these are anagenetic parameters
+		# dmat (dispersal multipliers) will work the same whether 
+		# we are using j or m*j
+		dmat_orig = dmat
+		
+		start_index = 1
+		end_index = numstates_ranges_in_default_COOmat
+		
+		#print("m:")
+		#print(m)
+		# Initialize TRUE/FALSE for j events
+		# and list of traits
+		j_events_TF = NULL
+		trait_states = NULL
+		for (i in 1:length(m))
+			{
+			# Update j
+			dmat_new = m[i] * dmat
+			
+			# Which section of the input state probabilities are you using?
+			# Deal with null range (GAH!)
+			if (i > 1)
+				{
+				start_index = end_index + 1
+				end_index = start_index + numstates_ranges - 1
+				}
+			tmpa = Rcpp_leftprobs[start_index:end_index]
+			tmpb = Rcpp_rightprobs[start_index:end_index]
+			#print(length(Rcpp_leftprobs))
+			#print(numstates_ranges_times_ms)
+			#print("i")
+			#print(i)
+			#print(start_index)
+			#print(end_index)
+			#print(numstates_ranges)
+			#print(numstates_ranges_in_default_COOmat)
+			
+			# Call the fast C++ function
+			tmp_COO_weights_columnar = .Call( "cpp_calc_anclikes_sp_COOweights_faster", Rprintmat=as.integer(Rprintmat), cpp_leftprobs=as.numeric(tmpa), cpp_leftprobs=as.numeric(tmpb), l=l, s=as.numeric(s), v=as.numeric(v), j=as.numeric(j), y=as.numeric(y), dmat=as.matrix(dmat_new), maxent01s=as.matrix(maxent01s), maxent01v=as.matrix(maxent01v), maxent01j=as.matrix(maxent01j), maxent01y=as.matrix(maxent01y), max_minsize_as_function_of_ancsize=as.integer(max_minsize_as_function_of_ancsize), PACKAGE = "cladoRcpp" )
+			
+			#print("tmp_COO_weights_columnar")
+			#print(tmp_COO_weights_columnar)
+
+			#print(jts_matrix)
+			# Identify the j events right here...
+			if (is.null(jts_matrix) == FALSE)
+				{
+				num_clado_events = length(tmp_COO_weights_columnar[[1]])
+				tmp_j_events_TF = rep(FALSE, num_clado_events)
+				
+				tmp_trait_states = rep(i, num_clado_events)
+				
+				# Never has null range
+				states_list_area_0based = l
+				
+				# Go through the events, identify j events
+				for (ci in 1:num_clado_events)
+					{
+					ancstate = tmp_COO_weights_columnar[[1]][ci] + 1
+					Lstate = tmp_COO_weights_columnar[[2]][ci] + 1
+					Rstate = tmp_COO_weights_columnar[[3]][ci] + 1
+					anc_areas = c(l[[ancstate]])
+					L_areas = c(l[[Lstate]])
+					R_areas = c(l[[Rstate]])
+					desc_areas = sort(unique(c(L_areas, R_areas)))
+					desc_in_anc_TF = desc_areas %in% anc_areas
+					tmp_j_events_TF[ci] = all(desc_in_anc_TF) == FALSE
+					} # END for (ci in 1:num_clado_events)
+				j_events_TF = c(j_events_TF, tmp_j_events_TF)
+				trait_states = c(trait_states, tmp_trait_states)
+				#print(trait_states)
+				} # END if (is.null(jts_matrix) == FALSE)
+
+			
+			# Note that we will also have to update the index numbers of the ancestral, left, and right 
+			# states, since these are now conditional on trait state 0, trait state 1, etc.
+			
+			# Add numstates times (i-1), so that the correct indexes are stored (for trait 0, trait 1, etc.)
+			if (m_null_range == FALSE)
+				{
+				tmp_COO_weights_columnar[[1]] = tmp_COO_weights_columnar[[1]] + (i-1)*numstates_ranges
+				tmp_COO_weights_columnar[[2]] = tmp_COO_weights_columnar[[2]] + (i-1)*numstates_ranges
+				tmp_COO_weights_columnar[[3]] = tmp_COO_weights_columnar[[3]] + (i-1)*numstates_ranges
+				} else {
+				tmp_COO_weights_columnar[[1]] = tmp_COO_weights_columnar[[1]] + (i-1)*numstates_ranges
+				tmp_COO_weights_columnar[[2]] = tmp_COO_weights_columnar[[2]] + (i-1)*numstates_ranges
+				tmp_COO_weights_columnar[[3]] = tmp_COO_weights_columnar[[3]] + (i-1)*numstates_ranges
+				}
+			
+			# Append to list of vectors that make up COO_weights_columnar
+			#print("i")
+			#print(i)
+			#print("COO_weights_columnar_1")
+			#print(COO_weights_columnar_1)
+			
+
+			
+
+			COO_weights_columnar_1 = c(COO_weights_columnar_1, tmp_COO_weights_columnar[[1]])
+			COO_weights_columnar_2 = c(COO_weights_columnar_2, tmp_COO_weights_columnar[[2]])
+			COO_weights_columnar_3 = c(COO_weights_columnar_3, tmp_COO_weights_columnar[[3]])
+			COO_weights_columnar_4 = c(COO_weights_columnar_4, tmp_COO_weights_columnar[[4]])
+
+			#print("COO_weights_columnar_1")
+			#print(COO_weights_columnar_1)
+
+			} # END for (i in 1:length(m))
+
+		COO_weights_columnar = NULL
+		COO_weights_columnar[[1]] = COO_weights_columnar_1
+		COO_weights_columnar[[2]] = COO_weights_columnar_2
+		COO_weights_columnar[[3]] = COO_weights_columnar_3
+		COO_weights_columnar[[4]] = COO_weights_columnar_4
+		
+		#print("COO_weights_columnar:")
+		#print(COO_weights_columnar)
+	
+		# Now, add some additional cladogenetic events
+		# representing sudden change 
+		new_COO_weights_columnar = COO_weights_columnar
+		addl_COO_weights_columnar_1 = NULL
+		addl_COO_weights_columnar_2 = NULL
+		addl_COO_weights_columnar_3 = NULL
+		addl_COO_weights_columnar_4 = NULL
+		aind = 0
+		if (is.null(jts_matrix) == FALSE)
+			{
+			# For the nonzero jt12, jt21, etc.,
+			# modify the weight of the jt11, jt22 etc. events,
+			# and create new jt12, jt21, etc. events
+			
+			# First, cut down COO_weights_columnar 
+			# to the j events
+			for (jt_i in 1:length(m))
+				{
+				for (jt_j in 1:length(m))
+					{
+					#print(paste(jt_i, jt_j, sep=","))
+
+					jts_fract = jts_matrix[jt_i,jt_j]
+					if (jt_i == jt_j)
+						{ 
+						# Modify the rate of staying in the 
+						# same trait state
+						TF2 = trait_states == jt_i
+						TF = (j_events_TF + TF2) == 2
+						new_COO_weights_columnar[[4]][TF] = jts_fract * COO_weights_columnar[[4]][TF]
+						next()
+						}
+					if (jts_fract > 0)
+						{
+						# Jump to area state 2
+						# Normally trait would be 1->1, 2->2, etc.
+						# But here it's 1->2, 1->3, etc.
+						# Add rows to addl_COO_weights_columnar for these
+
+						# starting traits
+						#print("trait_states")
+						#print(trait_states)
+						TF2 = trait_states == jt_i
+						starttrait_TF = (j_events_TF + TF2) == 2
+						
+						#print("TF2")
+						#print(TF2)
+						#print("starttrait_TF")
+						#print(starttrait_TF)
+						
+						# ending traits
+						TF3 = trait_states == jt_j
+						endtrait_TF = (j_events_TF + TF3) == 2
+
+						#print("j_events_TF")
+						#print(j_events_TF)
+						#print("TF3")
+						#print(TF3)
+						#print("endtrait_TF")
+						#print(endtrait_TF)
+												
+						# (starttrait_TF and endtrait_TF *should* 
+						#  have the same number of TRUE)
+						if (sum(starttrait_TF) == 0)
+							{
+							next()
+							}
+						if (sum(endtrait_TF) == 0)
+							{
+							next()
+							}
+						# Add the new row for the ancestral range+state
+						#cat("\n")
+						
+						for (TF_in in 1:sum(starttrait_TF))
+							{
+							#cat(TF_in, "/", sum(starttrait_TF), "\n")
+							
+							#print(COO_weights_columnar[[1]][starttrait_TF][TF_in])
+							addl_COO_weights_columnar_1[(aind=aind+1)] = COO_weights_columnar[[1]][starttrait_TF][TF_in]
+							
+							#print("whatssupA")
+							#print(COO_weights_columnar[[2]][endtrait_TF][TF_in])
+							#print(aind)
+							#print(addl_COO_weights_columnar_2)
+							#print(addl_COO_weights_columnar_2[(aind)])
+							#print("whasuupC")
+							addl_COO_weights_columnar_2[(aind)] = COO_weights_columnar[[2]][endtrait_TF][TF_in]
+							#print("whatssupB")
+							
+							#print("whatssup1")
+							#print(COO_weights_columnar[[3]][endtrait_TF][TF_in])
+							addl_COO_weights_columnar_3[aind] = COO_weights_columnar[[3]][endtrait_TF][TF_in]
+							# Here's where you're getting the
+							# weight of e.g. a jt12 event
+							#print("whatssup2")
+							
+							#print(COO_weights_columnar[[1]])
+							#print(COO_weights_columnar[[2]])
+							#print(COO_weights_columnar[[3]])
+							#print(COO_weights_columnar[[4]])
+																			
+							#print(COO_weights_columnar)
+							#length(COO_weights_columnar[[4]])
+							#print(starttrait_TF)
+							#print(TF_in)
+							#print(aind)
+							#print(COO_weights_columnar[[4]][starttrait_TF][TF_in])
+
+							addl_COO_weights_columnar_4[aind] = COO_weights_columnar[[4]][starttrait_TF][TF_in] * jts_fract
+							} # END for (TF_in in 1:sum(starttrait_TF))
+						} # END if (jts_matrix[jt_i,jt_j] > 0)
+					} # END for (jt_j in 1:length(m))
+				} # END for (jt_i in 1:length(m))
+			
+			# After going through the whole jt12 etc matrix, 
+			# make new COO_weights_columnar
+			COO_weights_columnar[[1]] = c(new_COO_weights_columnar[[1]], addl_COO_weights_columnar_1)
+			COO_weights_columnar[[2]] = c(new_COO_weights_columnar[[2]], addl_COO_weights_columnar_2)
+			COO_weights_columnar[[3]] = c(new_COO_weights_columnar[[3]], addl_COO_weights_columnar_3)
+			COO_weights_columnar[[4]] = c(new_COO_weights_columnar[[4]], addl_COO_weights_columnar_4)
+			
+			# OK, you *should* be good. And these *should* be unique.
+			} # END if (is.null(jts_matrix) == FALSE)
+
+		#print("COO_weights_columnar")
+		#print(COO_weights_columnar)
+	
+		# Return the m-modified COO weights
+		return(COO_weights_columnar)
+		} # END if (is.null(m) == FALSE)
+	#print("rcpp_calc_anclikes_sp_COOweights_faster")
+
+	} # END rcpp_calc_anclikes_sp_COOweights_faster
 
 
 
@@ -1578,8 +1887,9 @@ rcpp_calc_anclikes_sp_COOweights_faster <- function(Rcpp_leftprobs, Rcpp_rightpr
 #' @export
 #' @seealso \code{\link{rcpp_calc_anclikes_sp}}
 #' @seealso \code{\link{rcpp_calc_anclikes_sp}}
-#' @bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
-#'   @cite Matzke_2012_IBS
+#' #bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
+#'   @cite Matzke_2013
+#'   @cite Matzke_2014
 #' @author Nicholas Matzke \email{matzke@@berkeley.edu}
 #' @examples
 #' # For the basic logic of a probablistic cladogenesis model, see
@@ -1654,8 +1964,9 @@ rcpp_calc_anclikes_sp_using_COOprobs <- function(Rcpp_leftprobs, Rcpp_rightprobs
 #' time savings.
 #' @export
 #' @seealso \code{\link{rcpp_calc_anclikes_sp}}
-#' @bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
-#'   @cite Matzke_2012_IBS
+#' #bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
+#'   @cite Matzke_2013
+#'   @cite Matzke_2014
 #' @author Nicholas Matzke \email{matzke@@berkeley.edu}
 #' @examples
 #' # For the basic logic of a probablistic cladogenesis model, see
@@ -1719,8 +2030,9 @@ rcpp_calc_rowsums_for_COOweights_columnar <- function(COO_weights_columnar, nums
 #' @return \code{splitlikes} Vector of the probabilities of each allowed split
 #' @export
 #' @seealso \code{\link{rcpp_calc_anclikes_sp}}
-#' @bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
-#'   @cite Matzke_2012_IBS
+#' #bibliography /Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp_refs.bib
+#'   @cite Matzke_2013
+#'   @cite Matzke_2014
 #' @author Nicholas Matzke \email{matzke@@berkeley.edu}
 #' @examples
 #' # For the basic logic of a probablistic cladogenesis model, see
