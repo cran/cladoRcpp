@@ -1,5 +1,5 @@
 bibentry("Manual",
-         title = "cladoRcpp v0.15: C++ Implementations of Phylogenetic Cladogenesis Calculations",
+         title = "cladoRcpp v0.15.1: C++ Implementations of Phylogenetic Cladogenesis Calculations",
          author = c(person("Nicholas J.", "Matzke", email = "nickmatzke.ncse@gmail.com", role=c("aut", "cre", "cph"))),
          organization = "University of Auckland",
          address      = "New Zealand",

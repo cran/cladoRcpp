@@ -1,8 +1,8 @@
 Package: cladoRcpp
 Type: Package
 Title: C++ Implementations of Phylogenetic Cladogenesis Calculations
-Version: 0.15
-Date: 2018-10-03
+Version: 0.15.1
+Date: 2018-11-21
 Authors@R: c(person("Nicholas J.", "Matzke", email="nickmatzke.ncse@gmail.com", role=
         c("aut", "cre", "cph")))
 Author: Nicholas J. Matzke [aut, cre, cph]
@@ -17,6 +17,6 @@ LazyLoad: yes
 ByteCompile: true
 RoxygenNote: 6.1.0
 NeedsCompilation: yes
-Packaged: 2018-10-03 03:30:36 UTC; nmat471
+Packaged: 2018-11-20 23:11:08 UTC; nmat471
 Repository: CRAN
-Date/Publication: 2018-10-08 23:20:03 UTC
+Date/Publication: 2018-11-21 05:30:02 UTC

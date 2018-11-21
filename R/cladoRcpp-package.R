@@ -3,8 +3,8 @@
 #' \tabular{ll}{
 #' Package: \tab cladoRcpp\cr
 #' Type: \tab Package\cr
-#' Version: \tab 0.15\cr
-#' Date: \tab 2018-10-03\cr
+#' Version: \tab 0.15.1\cr
+#' Date: \tab 2018-11-21\cr
 #' License: \tab GPL (>= 3)\cr
 #' LazyLoad: \tab yes\cr
 #' }
@@ -66,6 +66,9 @@
 #'
 #' @name cladoRcpp-package
 #' @aliases cladoRcpp
+#' @aliases cladoRcpp-package
+#' @aliases cladorcpp
+#' @aliases cladorcpp-package
 #' @docType package
 #' @title Phylogenetic probability calculations using Rcpp
 #' @note Some starting code borrowed from Rcpp examples, Whit Armstrong's rcppbugs, and Vladimir Minin's phyloRcppExamples.

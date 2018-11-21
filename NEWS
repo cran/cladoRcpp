@@ -1,3 +1,27 @@
+CHANGES in cladoRcpp VERSION 0.15.1 -- 2018-11-21
+
+NEW FEATURES
+
+    o none
+
+BUG FIXES
+
+    o none
+
+OTHER CHANGES
+
+    o Added R documentation file 00-cladoRcpp-package.Rd, which got lost somewhere
+      in the updates. This contains aliases so that ?cladoRcpp brings up the package
+      information, and also should fix CRAN warnings for BioGeoBEARS like:
+      checking Rd cross-references ... WARNING
+      Missing link or links in documentation object 'BioGeoBEARS-package.Rd':
+      '[cladoRcpp]{cladoRcpp}'
+
+ 
+
+
+
+
 CHANGES in cladoRcpp VERSION 0.15 -- 2018-10-03
 
 NEW FEATURES

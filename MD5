@@ -1,9 +1,11 @@
-cd53b218778c505c97d7d8d30de59ba8 *DESCRIPTION
+73ec66a51ca516963e5ef03d19619b9b *DESCRIPTION
 5d3ecf538f34811b7a7be8f4b0010e00 *NAMESPACE
-89312adaf56b9b2a12947838ee9c2028 *NEWS
-80d15405ae3c84775ab8fda7c928ef71 *R/cladoRcpp-package.R
+022544c2969878f4a899b010e484e6ba *NEWS
+35831b5f6f9c3cb3c4130f8051237bdf *R/cladoRcpp-package.R
 105419fec9db3774c6663a0f76378640 *R/cladoRcpp.R
-17b7d7a5873625b9362fa91291e6f63b *inst/CITATION
+d684a15b64be009e5831703dcb674fc4 *inst/CITATION
+9960b0edd11fa839d680acae8b17a183 *inst/notes/2018-10-03_submission_email.txt
+de69b50d7bf8e23e16d957a3d9c3a468 *man/00-cladoRcpp-package.Rd
 f806fdfc0f96cee787a97875cda2cc6e *man/Rcpp_combn_zerostart.Rd
 3aa616302f421bffbf7b896becb1b220 *man/areas_list_to_states_list_old.Rd
 2eadcc664e8d232186f199adeb00b10e *man/numstates_from_numareas.Rd
